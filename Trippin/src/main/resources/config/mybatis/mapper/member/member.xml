@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	
+	<!-- [[[[현지]]]] -->
+	<insert id="insert" parameterType="member">
+		insert into MEMBER (m_seq, m_email, m_name, m_nickname, m_pw, m_code, m_tel) values(#{m_seq}, #{m_email}, #{m_name}, #{m_nickname}, #{m_pw}, #{m_code}, #{m_tel})
+	</insert>
+	
+	<select id="checkEmail" parameterType="String" resultType="String">
+		select m_email from MEMBER where m_email = #{m_email}
+	</select>
+	
+	<select id="checkLogin" resultType="int" parameterType="member">
+		select m_seq from MEMBER where m_email = #{m_email} and m_pw = #{m_pw}
+	</select>
+	
+	<select id="getM_nickname" resultType="String" parameterType="int">
+		select m_nickname from MEMBER where m_seq = #{m_seq}
+	</select>
+	
+	<select id="mypage" resultType="member" parameterType="int">
+		select * from MEMBER where m_seq = #{m_seq}
+	</select>
+	
+	<update id="updatePw" parameterType="member">
+		update MEMBER set m_pw = #{m_pw} where m_seq = #{m_seq}
+	</update>
+	
+	<update id="updateProfile" parameterType="member">
+		update MEMBER set m_profile = #{m_profile}, m_nickname = #{m_nickname}, m_tel = #{m_tel} where m_seq = #{m_seq}
+	</update>
+	
+	<select id="nowM_Seq" resultType="int">
+		select nvl(max(m_seq), 0) + 1 from MEMBER
+	</select>
+	
+	<!-- 회원 클릭시 나오는 정보 -->
+	<select id="m_info" resultType="Map" parameterType="int">
+		select m.m_seq, m.m_profile, m.m_nickname, m.m_level, nvl(rv_cnt, 0) mrv_cnt, nvl(slog_cnt, 0) mslog_cnt
+		from (select count(*) rv_cnt, m_seq from REVIEW group by m_seq) mrv,
+			(select count(*) slog_cnt, m_seq from SLOG group by m_seq) mslog,
+			MEMBER m
+			where m.m_seq = mrv.m_seq(+)
+			and m.m_seq = mslog.m_seq(+)
+			and m.m_seq = #{m_seq}
+	</select>
+	
+	<!-- m_info에서 멤버의 리뷰 장소 지역명 -->
+	<select id="rv_a1list" parameterType="int" resultType="Map">
+		select a1.addr1_name, a1.addr1_seq, r.report_status
+	    from REVIEW r, ADDR1 a1, ADDR2 a2, FORM f, MEMBER m
+	    where r.m_seq = m.m_seq
+	    and r.f_seq = f.f_seq
+	    and f.addr2_seq = a2.addr2_seq
+	    and a2.addr1_seq = a1.addr1_seq
+	    and m.m_seq = #{m_seq}
+	    group by a1.addr1_name, a1.addr1_seq, r.report_status
+	</select>
+	
+	<!-- m_info에서 멤버의 여행기 장소 지역명 -->
+	<select id="slog_a1list" parameterType="vo.slog.SlogVO" resultType="vo.common.Addr1VO">
+		select addr1_name, addr1_seq
+		from ADDR1 where addr1_seq in
+		(select trim(regexp_substr(addrlist, '[^,]+', 1, level)) as seq 
+		from SLOG where m_seq = #{m_seq} and status = #{status}
+		<![CDATA[
+		connect by level <= length(addrlist) - length(replace(addrlist, ','))+1)
+		]]>
+		order by addr1_seq
+	</select>
+	
+	<select id="selectM_email" parameterType="int" resultType="String">
+		select m_email from MEMBER where m_seq = #{m_seq}
+	</select>
+	
+	<select id="selectM_seq2" parameterType="String" resultType="int">
+		<!-- select
+			case
+				when (select count(m_seq) from MEMBER where m_code = #{m_code}) = 0 then (0)
+				else (select m_seq from MEMBER where m_code = #{m_code})
+			end as m_seq
+			from dual -->
+		select nvl(m_seq, 0) from member where m_code=#{m_code}
+	</select>
+	
+	<update id="inputRecom_code" parameterType="member">
+		update MEMBER set recom_code = #{recom_code} where m_seq = #{m_seq}
+	</update>
+	
+	
+	
+	<!-- [[[[새미]]]] -->
+	<select id="getStatus" resultType="int" parameterType="int">
+		select
+		m_status from member where m_seq=#{m_seq}
+	</select>
+
+	<select id="getMember" resultType="member" parameterType="int">
+		select
+		* from member where m_seq=#{m_seq}
+	</select>
+
+	<update id="updateScore" parameterType="int">
+		update MEMBER set m_score
+		= m_score + (select score from m_report_cate where
+		m_report_cate_seq=(select m_report_cate_seq from m_report where
+		m_report_seq=#{m_report_seq}))
+		where m_seq = (select bad_seq from
+		m_report where m_report_seq =
+		#{m_report_seq})
+	</update>
+
+	<update id="minUpScore" parameterType="int">
+		update MEMBER set m_score
+		= m_score - (select score from m_report_cate where
+		m_report_cate_seq=(select m_report_cate_seq from m_report where
+		m_report_seq=#{m_report_seq}))
+		where m_seq = (select bad_seq from
+		m_report where m_report_seq =
+		#{m_report_seq})
+	</update>
+
+	<!--영구정지 -->
+	<update id="deleteMember">
+		update member set m_status = 2
+		where m_seq in (select
+		bad_seq from m_report)
+		and m_score &gt; 50
+	</update>
+
+	<select id="memberList" resultType="member" parameterType="map">
+		select * from
+		(select rownum rn,t.* from
+		(select * from member
+		<if test="type != null">
+			where ${type} like '%${word}%'
+		</if>
+		order by m_seq)t)
+		<![CDATA[
+				where rn >= #{first} and rn <= #{last}
+			]]>
+	</select>
+
+	<select id="memberTotal" resultType="int" parameterType="map">
+		select count(*) from member
+		<if test="type != null">
+			where ${type} like '%${word}%'
+		</if>
+		order by m_seq
+
+	</select>
+
+	<select id="detailMember" resultType="map" parameterType="int">
+		select
+		m.*,nvl(s.scount,0)
+		scount,nvl(r.rcount,0) rcount,nvl(rc.rcvcount,0) rcvcount
+		,nvl(c.cpcnt,0)cpcnt ,nvl(mc.cash,0)cash,nvl(mp.point,0)point,nvl(p.paymentcnt,0)
+		paymentcnt,nvl(t.ticketcnt,0) ticketcnt,
+		nvl(mr.mrcount,0) mrcnt,
+		nvl(rv.rvcount,0) rvcnt,nvl(rvc.rvccount,0)
+		rvccnt,nvl(sl.slcount,0)
+		slcnt,nvl(slc.slccount,0) slccnt
+		from member m,
+		(select m_seq,count(title) as scount from slog group by m_seq)s,
+		(select m_seq,count(content)as rcount from review group by m_seq)r,
+		(select m_seq,count(content)as rcvcount from review_cmt group by m_seq)rc,
+		(select m_seq,count(*)as cpcnt from couponlist group by m_seq)c,
+        (select sum(mc.spare) cash,m.m_seq from mycash mc, member m where m.m_seq = mc.m_seq(+) group by m.m_seq)mc,
+        (select sum(mp.point) point,m.m_seq from mypoint mp, member m where m.m_seq = mp.m_seq(+) group by m.m_seq)mp,
+		(select m_seq,count(*)as paymentcnt from payment group by
+		m_seq)p,
+		(select m_seq,count(*)as ticketcnt from t_purchase group by
+		m_seq)t,
+		(select bad_seq,count(*)as mrcount from m_report group by
+		bad_seq)mr,
+		(select r.m_seq, count(rv.content) rvcount from report
+		r,review rv where
+		r.board_no = rv.rv_seq and r.kind=0 group by
+		r.m_seq)rv,
+		(select rvc.m_seq,count(rvc.content)rvccount from report
+		r,review_cmt rvc
+		where r.board_no = rvc.rv_cmt_seq and r.kind=1 group
+		by rvc.m_seq)rvc,
+		(select sl.m_seq,count(sl.intro)slcount from s_report
+		sr,slog sl where
+		sr.board_no(+) = sl.slog_seq and sr.kind=0 group by
+		sl.m_seq)sl,
+		(select slc.m_seq,count(slc.content)slccount from s_report
+		sr,slog_cmt
+		slc where sr.board_no(+) = slc.slog_cmt_seq and sr.kind=1
+		group by
+		slc.m_seq)slc
+		where m.m_seq=s.m_seq(+)
+		and m.m_seq=r.m_seq(+)
+		and
+		m.m_seq=rc.m_seq(+)
+		and m.m_seq=c.m_seq(+)
+		and m.m_seq=mc.m_seq(+)
+        and m.m_seq = mp.m_seq(+)
+		and
+		m.m_seq=p.m_seq(+)
+		and m.m_seq=t.m_seq(+)
+		and m.m_seq=mr.bad_seq(+)
+		and m.m_seq=rv.m_seq(+)
+		and m.m_seq=rvc.m_seq(+)
+		and m.m_seq=sl.m_seq(+)
+		and m.m_seq=slc.m_seq(+)
+		and m.m_seq = #{m_seq}
+		order by m.m_seq
+	</select>
+	
+	
+	
+	<!-- [[[[희지]]]] -->
+	<!-- 레벨 올리기 -->
+	<select id="myLevel" parameterType="int" resultType="int">
+		select m_level from member where m_seq = #{m_seq}
+	</select>
+	
+	<update id="levelUp" parameterType="member">
+		update member set m_level=#{m_level} where m_seq=#{m_seq}
+	</update>
+	
+	
+	<!-- [[[[재빈]]]] -->
+	<select id="mInfo" parameterType="int" resultType="member">
+		select *from member where m_seq = #{m_seq}
+	</select>
+	
+	
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

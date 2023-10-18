@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="s_report">
+
+	<insert id="sr_insert" parameterType="s_report">
+		insert into s_report
+		values(#{s_report_seq},
+		#{report_cate_seq},
+		#{kind},#{board_no},#{m_seq},#{email},
+		#{content}, sysdate, 0, null,null,null)
+	</insert>
+	
+	<select id="srSeq" resultType="int" >
+	select max(s_report_seq)+1 from s_report
+	</select>
+	
+	<select id="sreportList" resultType="map" parameterType="map">
+		select * from(
+		select rownum rn, t.* from	
+		(select 0 as table_type,
+        s.*,
+		rc.report_cate_name,rc.score,m.m_nickname,m.m_email memail,m.m_seq mseq
+		from
+		s_report s,report_cate rc,member m,slog sl
+		where rc.report_cate_seq =
+		s.report_cate_seq
+		and s.board_no = sl.slog_seq
+        and s.kind=0
+		and sl.m_seq = m.m_seq
+        
+        union all
+        
+        select 1 as table_type,
+        s.*,
+		rc.report_cate_name,rc.score,m.m_nickname,m.m_email memail,m.m_seq mseq
+		from
+		s_report s,report_cate rc,member m,slog_cmt slc
+		where rc.report_cate_seq =
+		s.report_cate_seq
+		and s.board_no = slc.slog_seq
+        and s.kind=1
+		and slc.m_seq = m.m_seq
+		 )t
+		<if test="type!=null">
+			where ${type} like '%${word}%'
+		</if>
+		order by t.s_report_seq desc
+		)
+		<![CDATA[
+			where rn >= #{first} and rn <= #{last}
+		]]>
+	</select>
+
+	<select id="sreportTotal" resultType="int" parameterType="map">
+		select count(*) from 
+		(select 0 as table_type,
+        s.*,
+		rc.report_cate_name,rc.score,m.m_nickname,m.m_email memail, m.m_seq mseq
+		from
+		s_report s,report_cate rc,member m,slog sl
+		where rc.report_cate_seq = s.report_cate_seq
+		and s.board_no = sl.slog_seq
+        and s.kind=0
+		and sl.m_seq = m.m_seq
+        
+        union all
+        
+        select 1 as table_type,
+        s.*,
+		rc.report_cate_name,rc.score,m.m_nickname,m.m_email memail, m.m_seq mseq
+		from
+		s_report s,report_cate rc,member m,slog_cmt slc
+		where rc.report_cate_seq =
+		s.report_cate_seq
+		and s.board_no = slc.slog_seq
+        and s.kind=1
+		and slc.m_seq = m.m_seq
+		 )t
+		<if test="type!=null">
+			where ${type} like '%${word}%'
+		</if>
+	</select>
+
+	<select id="s_reportOne" resultType="Map" parameterType="int">
+		select
+		s.*,m.m_nickname,m.m_seq memseq,rc.report_cate_name,rc.score,m.m_email memail,sl.intro
+		from s_report s,
+		slog sl, member m,report_cate rc
+		where s.board_no= sl.slog_seq
+		and
+		sl.m_seq = m.m_seq
+		and s.report_cate_seq = rc.report_cate_seq
+		and
+		s.s_report_seq=#{s_report_seq}
+	</select>
+	
+	<select id="s_report_cmtOne" resultType="Map" parameterType="int">
+		select
+		s.*,m.m_nickname,m.m_seq memseq,rc.report_cate_name,rc.score,m.m_email memail,slc.content sclct
+		from s_report s,
+		slog_cmt slc, member m,report_cate rc
+		where s.board_no= slc.slog_cmt_seq
+		and
+		slc.m_seq = m.m_seq
+		and s.report_cate_seq = rc.report_cate_seq
+		and
+		s.s_report_seq=#{s_report_seq}
+	</select>
+	
+	<update id="spUpdate" parameterType="s_report">
+		update s_report set
+		result=#{result},memo=#{memo, jdbcType=VARCHAR},
+		resultdate=sysdate,
+		plus30 = sysdate+30
+		where s_report_seq = #{s_report_seq}
+	</update>
+
+
+</mapper>
+
+
+
+
+

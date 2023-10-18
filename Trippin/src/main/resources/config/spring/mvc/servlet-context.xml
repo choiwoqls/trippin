@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<annotation-driven />
+
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<context:component-scan
+		base-package="com.increpas.trippin" />
+
+	
+	<!-- <<<공통>>> -->
+	<beans:bean class="controller.member.MemberController">
+		<beans:constructor-arg ref="tourService" />
+		<beans:constructor-arg ref="memberService" />
+		<beans:constructor-arg ref="hotpleService" />
+		<beans:constructor-arg ref="mailSendService" />
+		<beans:constructor-arg ref="adminService" />
+		<beans:constructor-arg ref="loginService" />
+		<beans:constructor-arg ref="scheService" />
+	</beans:bean>
+	
+	<beans:bean class="controller.admin.AdminController">
+		<beans:constructor-arg ref="adminService" />
+		<beans:constructor-arg ref="memberService" />
+		<beans:constructor-arg ref="csService" />
+		<beans:constructor-arg ref="purchaseService" />
+	</beans:bean>
+	
+	<!-- [[[[기범]]]] -->
+	<beans:bean class="controller.admin.AccomController">
+		<beans:constructor-arg ref="accomService"/>
+	</beans:bean>
+
+
+	<!-- [[[[희지]]]] -->	
+	<beans:bean class="controller.admin.HotpleController">
+		<beans:constructor-arg ref="hotpleService" />
+		<beans:constructor-arg ref="adminService" />
+		<beans:constructor-arg ref="memberService" />
+	</beans:bean>
+	
+	<beans:bean class="controller.member.PurchaseController">
+		<beans:constructor-arg ref="purchaseService" />
+		<beans:constructor-arg ref="memberService" />
+	</beans:bean>
+	
+	
+	<!-- [[[[현지, 희지]]]] -->	
+	<beans:bean class="controller.login.LoginController">
+		<beans:constructor-arg ref="loginService" />
+		<beans:constructor-arg ref="adminService" />
+		<beans:constructor-arg ref="memberService" />
+		<beans:constructor-arg ref="scheService" />
+	</beans:bean>
+	
+	
+	<!-- [[[[현지]]]] -->	
+	<beans:bean class="controller.admin.TourController">
+		<beans:constructor-arg ref="tourService" />
+		<beans:constructor-arg ref="memberService" />
+	</beans:bean>
+	
+	<beans:bean class="controller.admin.TicketController">
+		<beans:constructor-arg ref="ticketService" />
+		<beans:constructor-arg ref="tourService" />
+	</beans:bean>
+	
+	<beans:bean class="controller.join.JoinController">
+		<beans:constructor-arg ref="memberService" />
+		<beans:constructor-arg ref="mailSendService" />
+	</beans:bean>
+	
+	<!-- [[[재빈]]] -->
+	<beans:bean class="controller.member.ScheController">
+		<beans:constructor-arg ref="scheService"/>
+		<beans:constructor-arg ref="addrService"/>
+		<beans:constructor-arg ref="tourService"/>
+		<beans:constructor-arg ref="myclistService"/>
+		<beans:constructor-arg ref="loginService" />
+		<beans:constructor-arg ref="memberService" />
+	</beans:bean>
+	
+	<beans:bean class="controller.member.CostController">
+		<beans:constructor-arg ref="costService"/>
+		<beans:constructor-arg ref="scheService"/>
+	</beans:bean>
+	
+	<beans:bean class="controller.member.SlogController">
+		<beans:constructor-arg ref="slogService"/>
+		<beans:constructor-arg ref="scheService"/>	
+		<beans:constructor-arg ref="memberService"/>
+		<beans:constructor-arg ref="addrService"/>
+		<beans:constructor-arg ref="loginService"/>
+	</beans:bean>
+	
+	<!-- [[[[새미]]]] -->
+	<beans:bean class="controller.member.CsController">
+		<beans:constructor-arg ref="csService" />
+		<beans:constructor-arg ref="memberService" />
+	</beans:bean>
+	
+	
+</beans:beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="t_purchase">
+	
+	<!--해당 회원이 구매한 정보 리스트  -->	
+	<select id="t_purchaseList" resultType="t_purchase" parameterType="int">
+		select tp.*,t.ticket_name from t_purchase tp, ticket t  where  t.ticket_seq = tp.ticket_seq and m_seq = #{m_seq}
+	</select>
+	
+	<select id="t_purchaseOne" resultType="t_purchase" parameterType="int">
+	    select tp.*,t.ticket_name,ci.kind  
+	        from t_purchase tp, ticket t, c_inquiry ci
+	        where t.ticket_seq = tp.ticket_seq 
+	        and ci.purchase_no = tp.t_purchase_seq
+	        and ci.kind=1
+	        and tp.t_purchase_seq = #{purchase_no}
+	</select>
+	
+	<select id="t_purchase" resultType="t_purchase" parameterType="int">
+		select t.*,ci.kind from t_purchase t, c_inquiry ci
+		where 
+		t.t_purchase_seq = ci.purchase_no(+)
+		and t_purchase_seq = #{purchase_no}
+	</select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

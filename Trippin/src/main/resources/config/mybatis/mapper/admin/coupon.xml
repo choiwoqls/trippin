@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="coupon">
+	
+	<insert id="insert" parameterType="coupon">
+		insert into coupon values(coupon_seq.nextval, #{name}, #{kind}, #{valid_date}, #{type}, 
+		#{amount}, #{max_min}, #{use}, 
+		<if test="addr1_seq == 0">
+			null,
+		</if>
+		<if test="addr1_seq != 0">
+			#{addr1_seq},
+		</if>
+		<if test="board_no == 0">
+			null,
+		</if>
+		<if test="board_no != 0">
+			#{board_no},
+		</if>
+		0) 
+	</insert>
+	
+	<!-- 같이 쓸 경우 -->
+	<select id="coupon" resultType="coupon" parameterType="map">
+        select * from
+        	(select rownum rn, t.* from
+       			((select 0 as table_type, coupon_seq, name, kind, valid_date, type, amount, max_min, use, status from coupon)
+				union all
+				(select 1 as table_type, l_coupon_seq, name, level_no, valid_date, type, amount, max_min, use, status from l_coupon) 
+       		order by status asc, coupon_seq desc) t 
+	        <if test="what!=null or use!=null or status!=null or key!=null or key!=null">
+	  			where
+	  			<if test="what != null ">
+	  				table_type = #{what}
+	  			</if>
+	  			<if test="what != null and (use!=null or status!=null or key!=null) ">
+	  				and
+	  			</if>
+	  			<if test="use != null ">
+	  				use = #{use}
+	  			</if>
+	  			<if test="use!=null and (status!=null or key!=null) ">
+	  				and
+	  			</if>
+	  			<if test="status!=null">
+	  				status = #{status}
+	  			</if>
+	  			<if test="status!=null and key!=null">
+	  				and
+	  			</if>
+	  			<if test="key!=null">
+	  				name like '%${key}%'
+	  			</if>
+	  		</if>
+       		)
+        <![CDATA[
+			where rn >= #{first} and rn <= #{last}
+		]]>
+	</select>
+	
+	<!-- 같이 쓸 경우 count -->
+ 	<select id="totCount" resultType="int">
+		select count(*) from
+        ((select 0 as table_type, coupon_seq, name, kind, valid_date, type, amount, max_min, use, status from coupon)
+		union all
+		(select 1 as table_type, l_coupon_seq, name, level_no, valid_date, type, amount, max_min, use, status from l_coupon) 
+        order by status asc, coupon_seq desc) t
+	</select> 
+	
+  	<select id="someCount" resultType="int" parameterType="map">
+		select count(*) from
+        ((select 0 as table_type, coupon_seq, name, kind, valid_date, type, amount, max_min, use, status from coupon)
+		union all
+		(select 1 as table_type, l_coupon_seq, name, level_no, valid_date, type, amount, max_min, use, status from l_coupon) 
+        order by status asc, coupon_seq desc) t
+	        <if test="what!=null or use!=null or status!=null or key!=null or key!=null">
+	  			where
+	  			<if test="what != null ">
+	  				table_type = #{what}
+	  			</if>
+	  			<if test="what != null and (use!=null or status!=null or key!=null) ">
+	  				and
+	  			</if>
+	  			<if test="use != null ">
+	  				use = #{use}
+	  			</if>
+	  			<if test="use!=null and (status!=null or key!=null) ">
+	  				and
+	  			</if>
+	  			<if test="status!=null">
+	  				status = #{status}
+	  			</if>
+	  			<if test="status!=null and key!=null">
+	  				and
+	  			</if>
+	  			<if test="key!=null">
+	  				name like '%${key}%'
+	  			</if>
+	  		</if>
+	</select>
+	
+	<select id="oneCoupon" resultType="coupon" parameterType="int">
+		select * from coupon where coupon_seq = #{coupon_seq}
+	</select>
+	
+	<select id="welcome" resultType="coupon">
+		select coupon_seq, valid_date from coupon where kind = 0 and status = 0
+	</select>
+	
+	<select id="new_month" resultType="int" parameterType="int">
+		select coupon_seq from coupon where kind = 1 and status = 0 and valid_date = #{valid_date} order by coupon_seq
+	</select>
+	
+	<select id="new_special" resultType="coupon" >
+		select coupon_seq, valid_date from coupon where kind = 2 and status = 0 order by coupon_seq
+	</select>
+
+	<update id="couponRe" parameterType="int">
+		update coupon set status = 0 where coupon_seq=#{coupon_seq} and status=1
+	</update>
+	
+	<update id="couponEnd" parameterType="int">
+		update coupon set status = 2 where coupon_seq=#{coupon_seq}
+	</update>
+	
+	<update id="couponStop" parameterType="int">
+		update coupon set status = 1 where coupon_seq=#{coupon_seq} and status=0
+	</update>
+	
+	<select id="buyCoupon" parameterType="map" resultType="map">
+        (select 0 as table_type, c.coupon_seq, c.name, c.type, c.amount, c.max_min, to_char(cl.valid_date, 'yyyy/mm/dd') valid_date
+		from coupon c, couponlist cl
+		where cl.m_seq = #{m_seq} and cl.status = 0 and cl.kind = 0
+		and cl.coupon_no = c.coupon_seq and use!= ${use}
+		<![CDATA[
+		and (c.type = 0 or (c.type=1 and c.max_min <= #{max_min})))
+		]]>
+		union all
+		(select 1 as table_type, l.l_coupon_seq, l.name, l.type, l.amount, l.max_min, to_char(cl.valid_date, 'yyyy/mm/dd') valid_date
+		from l_coupon l, couponlist cl
+		where cl.m_seq = #{m_seq} and cl.status = 0 and cl.kind = 1
+		and cl.coupon_no = l.l_coupon_seq and use!= ${use}
+		<![CDATA[
+		and (l.type = 0 or (l.type=1 and l.max_min <= #{max_min})))
+		]]>
+	</select>
+	
+	
+</mapper>
+
+
+
+
+

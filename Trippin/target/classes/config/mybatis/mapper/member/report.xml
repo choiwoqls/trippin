@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="report">
+	
+	
+	<!-- [[[[희지]]]] -->
+	<insert id="insert" parameterType="report">
+		insert into report values(report_seq.nextval, #{report_cate_seq}, #{kind},
+		#{board_no}, #{m_seq}, #{email}, #{content}, sysdate, 0, null, null, null)
+	</insert>
+	
+	
+	
+	<!-- [[[[새미]]]] -->
+	<select id="reviewReportList" resultType="Map">
+		select * from(
+		select rownum rn,t.* from
+		(select 0 as table_type,
+		r.*,m.m_nickname,m.m_email as memail,
+		rc.report_cate_name,rc.report_cate_seq rcseq,r.kind as rkind
+		from
+		review_cmt rc,report_cate rc, report r,member m
+		where
+		rc.report_cate_seq = r.report_cate_seq and
+		r.board_no = rc.rv_cmt_seq and r.kind=1
+		and
+		rc.m_seq =m.m_seq
+
+		union all
+
+		select 1 as table_type,
+		r.*,m.m_nickname,m.m_email as
+		memail,rc.report_cate_name,rc.report_cate_seq rcseq,r.kind as rkind
+		from report r,report_cate rc,review
+		rv,member m
+		where rc.report_cate_seq
+		= r.report_cate_seq
+		and r.board_no = rv.rv_seq and r.kind=0
+		and rv.m_seq
+		= m.m_seq
+		)t
+		<if test="type != null">
+			where ${type} like '%${word}%'
+		</if>
+		order by t.report_seq desc
+		)
+		<![CDATA[where rn >=#{first} and rn <=#{last}]]>
+	</select>
+
+
+	<select id="reportTotal" resultType="int" parameterType="map">
+		select count(*) from
+		(select 0 as table_type, r.*,m.m_nickname,m.m_email as memail,
+		rc.report_cate_name,rc.report_cate_seq rcseq,r.kind as rkind
+		from
+		review_cmt rc,report_cate rc, report r,member m
+		where
+		rc.report_cate_seq
+		= r.report_cate_seq and
+		r.board_no = rc.rv_cmt_seq and r.kind=1
+		and
+		rc.m_seq =m.m_seq
+
+		union all
+
+		select 1 as table_type,
+		r.*,m.m_nickname,m.m_email as
+		memail,rc.report_cate_name,rc.report_cate_seq rcseq,r.kind as rkind
+		from report r,report_cate rc,review
+		rv,member m
+		where rc.report_cate_seq
+		= r.report_cate_seq
+		and r.board_no = rv.rv_seq and r.kind=0
+		and rv.m_seq = m.m_seq
+		)t
+		<if test="type != null">
+			where ${type} like '%${word}%'
+		</if>
+	</select>
+	
+	<!--리뷰댓글 해당content조회 -->
+	<select id="rv_cmtContent" resultType="map" parameterType="int">
+		select
+		rvc.*,m.m_nickname,r.report_seq,r.result,r.memo,r.board_no,rc.report_cate_name,rc.score,m.m_email
+		from REPORT r, review_cmt rvc, member m,report_cate rc
+		where r.board_no
+		= rvc.rv_cmt_seq
+		and m.m_seq = rvc.m_seq
+		and r.report_cate_seq = rc.report_cate_seq
+		and
+		rvc.rv_cmt_seq=#{rv_cmt_seq}
+	</select>
+	
+	<!--리뷰 해댱content조회 -->
+	<select id="rvContent" resultType="map" parameterType="int">
+		select
+		re.*,m.m_nickname,r.report_seq,r.result,r.memo,r.board_no,rc.report_cate_name,rc.score,m.m_email
+		,r.content rcontent
+		from report r, review re,member m,report_cate rc
+		where r.board_no = re.rv_seq
+		and m.m_seq = re.m_seq
+		and
+		r.report_cate_seq = rc.report_cate_seq
+		and
+		re.rv_seq=#{rv_seq}
+	</select>
+	<update id="rpUpdate" parameterType="report">
+		update report set
+		result=#{result},memo=#{memo, jdbcType=VARCHAR},
+		resultdate=sysdate,
+		plus30 = sysdate+30
+		where report_seq = #{report_seq}
+	</update>
+	
+	
+	<!-- [[[[현지]]]] -->
+	<update id="updateNo" parameterType="int">
+		update report set board_no = NULL
+		where board_no in 
+		(select distinct rp.board_no
+		from report rp, review rv, review_cmt rc, form f
+		where f.f_seq = rv.f_seq
+		and rv.rv_seq = rp.board_no
+		and rc.rv_cmt_seq = rp.board_no
+		and f.f_seq = #{f_seq})
+	</update>
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moneylist">
+
+	<select id="MNLseq" resultType="int">
+		select moneylist_seq.nextval from dual
+	</select>
+
+	<select id="checkMNL" parameterType="moneylist" resultType="int">
+		select moneylist_seq from moneylist where s_seq = #{s_seq} and m_seq = #{m_seq}
+	</select>
+	
+	<insert id="newMoneyList" parameterType="moneylist" >
+		insert into moneylist values(moneylist_seq.nextval, #{s_seq}, #{m_seq}, #{m_tot_pay}, #{m_tot_dutch})
+	</insert>
+	
+	<update id="updateMNL" parameterType="moneylist">
+		update moneylist set m_tot_pay = m_tot_pay + #{m_tot_pay} , m_tot_dutch = m_tot_dutch + #{m_tot_dutch} where moneylist_seq = #{moneylist_seq}
+	</update>
+
+	<select id="zeroCheck" parameterType="int" resultType="moneylist">
+		select m_tot_pay, m_tot_dutch from moneylist where moneylist_seq = #{moneylist_seq}
+	</select>
+	
+	<delete id="delMNL" parameterType="int">
+		delete moneylist where moneylist_seq = #{moneylist_seq}
+	</delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

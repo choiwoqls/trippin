@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jjim">
+	
+	
+	<insert id="insert" parameterType="jjim">
+		insert into JJIM (jjim_seq, m_seq, f_seq) values(jjim_seq.nextval, #{m_seq}, #{f_seq})
+	</insert>
+	
+	<update id="update" parameterType="jjim">
+		update JJIM set memo = #{memo} where jjim_seq = #{jjim_seq}
+	</update>
+	
+	<delete id="deleteJJIM" parameterType="jjim">
+		delete JJIM where f_seq = #{f_seq} and m_seq = #{m_seq}
+	</delete>
+	
+	<select id="countjjim" parameterType="int" resultType="int">
+		select count(*) from JJIM where f_seq = #{f_seq}	
+	</select>
+	
+	<select id="myjjimlist" parameterType="int" resultType="jjim">
+		select * from JJIM where m_seq = #{m_seq}
+	</select>
+	
+	<select id="checkJJIM" parameterType="jjim" resultType="jjim">
+		select * from JJIM where m_seq = #{m_seq} and f_seq = #{f_seq}
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

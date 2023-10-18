@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="city">
+
+	<!-- 시퀀스 -->
+	<select id="city_seq" resultType="int">
+		select city_seq.nextval from dual;
+	</select>
+	
+	<!-- 새로운 일정 도시 데이터 -->
+	<insert id="newCity" parameterType="city">
+		insert into city values(city_seq.nextval, #{s_seq}, #{addr1_seq}, #{num})
+	</insert>
+	
+	<!-- 일정 도시 데이터 삭제 -->
+	<delete id="delCity" parameterType="int">
+		delete city where s_seq = #{s_seq}
+	</delete>
+	
+	<!-- 일정 도시 리스트 -->
+	<select id="selectCity" parameterType="int" resultType="Map">
+		select c.*, nvl(a.addr1_name, '국내')as addr_name from city c, addr1 a where c.addr1_seq = a.addr1_seq(+) and s_seq = #{s_seq} order by num asc
+	</select>
+	
+	<!-- 일정 첫번째 도시 -->
+	<select id="firstCity" parameterType="int" resultType="int">
+		select c.addr1_seq from city c, (select min(city_seq) city_seq from city where s_seq = #{s_seq}) a 
+		where c.city_seq = a.city_seq
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

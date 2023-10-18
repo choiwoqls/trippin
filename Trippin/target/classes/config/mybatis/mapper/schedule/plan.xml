@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="plan">
+
+	<!-- 세부 일정 마지막 순서 -->
+	<select id="planLastNum" parameterType="plan" resultType="int">
+		select nvl(max(num), 0) as num from plan where s_seq = #{s_seq} and day_no =#{day_no}
+	</select>
+	
+	<!-- 세부일정 추가 -->
+	<insert id="newPlan" parameterType="plan" >
+		insert into plan values(plan_seq.nextval, #{s_seq}, #{day_no}, #{num}, #{f_seq}, #{memo}, #{time})
+	</insert>
+	
+	
+	<!-- 일정 세부일정 리스트 -->
+	<select id="schePlanList" parameterType="Map" resultType="Map">
+	    select p.*, f.f_seq, f.name, nvl(f.cate_seq, 0) as cate_seq, nvl(f.kind, 0)as kind, f.wi, f.kyung, nvl(f.addr2_seq, 0) as addr2_seq
+	    from plan p, form f
+	    where p.s_seq = #{s_seq} 
+	    and p.f_seq = f.f_seq(+) 
+	    and day_no = #{day_no} 
+	    order by num asc
+	</select>
+	
+	<!-- 세부일정 시간 추가 -->
+	<update id="updateTime" parameterType="plan" >
+		update plan set time = #{time} where plan_seq = #{plan_seq}
+	</update>
+	
+	<!-- 세부일정 메모 추가 -->
+	<update id="updateMemo" parameterType="plan">
+		update plan set memo =#{memo} where plan_seq = #{plan_seq}
+	</update>
+	
+	<!-- 세부일정 메모,시간 -->
+	<select id="planMT" resultType="plan" parameterType="int"> 
+		select *from plan where plan_seq = #{plan_seq}
+	</select>
+	
+	<!-- 세부일정 삭제 -->
+	<delete id="delPlan" parameterType="int">
+		delete plan where plan_seq = #{plan_seq}
+	</delete>
+	
+	<!-- 2023-08-15 -->
+	<insert id="newMemo" parameterType="plan">
+		insert into plan(plan_seq, s_seq, day_no, num, memo, time) values(plan_seq.nextval, #{s_seq}, #{day_no}, #{num}, #{memo}, #{time})
+	</insert>
+
+	<!-- 2023-09-04 -->
+	<select id="planCnt" parameterType="int" resultType="int">
+		select count(*) from plan where s_seq = #{s_seq} and f_seq is not null
+	</select>
+	
+	<!-- 2023-09-05 -->
+	<select id="slogPlan" parameterType="Map" resultType="Map">
+		select name, nvl(f.f_seq,0)as f_seq, nvl(f.cate_seq,0)as cate_seq, p.* from plan p, form f 
+		where p.f_seq = f.f_seq(+)
+		and s_seq = #{s_seq}
+		and day_no = #{day_no}
+		order by day_no, num
+	</select>
+	
+	<delete id="delDayPlan" parameterType="plan">
+		delete plan where s_seq = #{s_seq} and day_no = #{day_no}
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

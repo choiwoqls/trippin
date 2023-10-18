@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="opt">
+	
+	<select id="oneOpt" parameterType="int" resultType="opt">
+		select * from opt where opt_seq in 
+		<![CDATA[
+			(select trim(regexp_substr(ticket_cate_no, '[^,]+', 1, level)) as seq
+			from ticket where ticket_seq=#{ticket_seq}
+			connect by level <= length(ticket_cate_no) - length(replace(ticket_cate_no, ','))+1)
+			order by opt_seq
+		]]>
+	</select>
+	
+	<!-- 09-04 -->
+	<select id="optName" parameterType="int" resultType="String">
+		select opt_name from opt o, subopt s, t_amount t
+        where t.t_amount_seq = #{seq}
+        and t.subopt_seq  = s.subopt_seq
+        and s.opt_seq = o.opt_seq
+	</select>
+	
+
+</mapper>
+
+

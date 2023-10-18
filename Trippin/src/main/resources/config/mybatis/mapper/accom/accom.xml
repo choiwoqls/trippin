@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="accom">
+	
+	<!-- [[[[기범]]]] -->
+	<!-- 숙소 공통! 객실만 -->
+	<select id = "selectRoom" resultType="Map" parameterType="int">
+
+		select r.room_seq,r.room_name, r.maxpeople, v.room_view_name,
+			case when r.reservation_policy = 0 then '환불 불가'
+     		when r.reservation_policy = 1 then '무료 취소'
+     		when r.reservation_policy = 2 then '부분 환불'
+    		 else null end as rp, r.room_price, r.room_cnt
+		from room r
+			inner join form f on r.f_seq = f.f_seq
+			left join room_view v on r.room_view_seq = v.room_view_seq
+		where f.f_seq = #{f_seq}
+		order by r.room_price
+	</select>
+	
+	<!-- 숙소 공통 ! 숙소 중요 정보 -->
+	<select id="infoRoom" resultType="Map" parameterType="int">
+		select f_seq, i.info_content, c.info_cate_name 
+		from info i
+			inner join info_cate c on i.info_cate_seq = c.info_cate_seq
+		where f_seq = #{f_seq}
+	</select>
+	
+	<!-- 숙소 공통 ! 숙소 정책 -->
+	<select id="policy" resultType="Map" parameterType="int">
+	select * from policy p
+		left join policy_cate c on p.policy_cate_seq = c.policy_cate_seq
+	where f_seq = #{f_seq}
+	</select>
+	
+	<!-- 숙소 공통 ! 보건&안전 카테고리 -->
+	<select id="hs" resultType="Map" parameterType="int">
+		select 
+			case
+			when row_number() over (partition by h.hs_name order by hs_sub_seq) = 1 
+			then h.hs_name
+			else null
+				end as hs,s.hs_sub_name 
+		from hs_sub s
+			inner join hs h on s.hs_seq = h.hs_seq
+		where s.hs_sub_seq = #{hs_sub_seq}
+	</select>
+	
+	<select id="hssub" resultType="hssub">
+		select * from hs_sub order by 1
+	</select>
+	
+	<!-- 숙소 공통 ! 편의시설 카테고리 -->
+	<select id="cf" resultType="Map" parameterType="int">
+		select 
+			case
+			when row_number() over (partition by c.cf_name order by cf_sub_seq) = 1 
+			then c.cf_name
+			else null
+				end as cf,s.cf_sub_name 
+        from cf_sub s
+			inner join cf c on s.cf_seq = c.cf_seq
+		where s.cf_sub_seq = #{cf_sub_seq}
+	</select>
+	
+	<select id="cfsub" resultType="cfsub">
+		select * from cf_sub order by 1
+	</select>
+	
+	<!-- 숙소 공통 ! 객실 혜택 -->
+	<select id="benefit" resultType="String" parameterType="int">
+		select benefit from room_benefit where room_benefit_seq = #{room_benefit_seq}
+	</select>
+
+	<!-- 숙소 공통 ! 객실 디테일 -->
+	<select id="detailRoom" resultType="Map" parameterType="int">
+	
+		select r.room_seq, r.room_name, r.room_price, r.cancellation, r.checkin, r.checkout, r.room_condition, r.notice,
+				r.room_size, r.maxpeople, r.room_img, r.room_cnt, v.room_view_name, r.room_benefit_seq,k.bed_kind_name, s.bed_size_name, d.cnt,
+			case when r.smoke = 0 then '흡연 가능'
+     			when r.smoke = 1 then '금연'
+     			else null end as smoke,
+			case when r.pay = 0 then '지금 결제'
+     			when r.pay = 1 then '현장 결제'
+     			else null end as pay,
+			case when r.reservation_policy = 0 then '환불 불가'
+     			when r.reservation_policy = 1 then '무료 취소'
+     			when r.reservation_policy = 2 then '부분 환불'
+     			else null end as rp,
+			case when r.breakfast = 1 then '조식'
+     			else null end as breakfast
+		from room r
+			left join room_view v on v.room_view_seq = r.room_view_seq
+			left join room_benefit b on r.room_benefit_seq = b.room_benefit_seq
+            left join bed d on r.room_seq = d.room_seq
+            left join bed_kind k on d.bed_kind_seq = k.bed_kind_seq
+            left join bed_size s on d.bed_size_seq = s.bed_size_seq
+		where r.room_seq = #{room_seq}
+	</select>
+	
+	<select id="rvRoom" resultType="Map" parameterType="int">
+	
+		select r.room_seq, f.name, d.addr1_name, t.start_date, t.end_date, r.checkin, r.checkout, r.room_name, r.maxpeople, v.reservation_name, v.reservation_tel, v.reservation_mail,
+			t.stay_last_name, t.stay_first_name, t.stay_first_name, t.stay_sex, t.traffic, r.room_price
+		from form f
+			left join room r on r.f_seq = f.f_seq
+			left join payment t on r.room_seq = t.room_seq
+			left join member m on t.m_seq = m.m_seq
+			left join reservation v on m.m_seq = v.m_seq
+			inner join addr2 a on f.addr2_seq = a.addr2_seq
+			inner join addr1 d on a.addr1_seq = d.addr1_seq
+		where r.room_seq = #{room_seq}
+	
+	</select>
+	
+	<select id="rvMember"  resultType="member" parameterType="int">
+		select m_name, m_level, m_tel, m_email from member where m_seq = #{m_seq}
+	</select>
+	
+	<!-- 펜션 select -->
+	
+	<select id = "selectAlist" resultType="Map">
+        
+		select f.f_seq, f.name, min(z.room_price) as price,
+        a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+		from FORM f, ADDR2 a, CATE ca, ROOM z,
+		(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+		(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+		where f.addr2_seq = a.addr2_seq
+		and c.f_seq(+) = f.f_seq
+		and d.f_seq(+) = f.f_seq
+        and f.cate_seq = ca.cate_seq
+        and z.f_seq = f.f_seq
+        and ca.cate_seq = 3
+        and f.kind = 1
+        group by f.f_seq, f.name,a.addr2_name, f.intro, f.main_img,
+        c.jjim, d.savg, d.rv
+	</select>
+
+	<!-- 펜션 숙소만 -->
+	<select id = "selectPen" resultType="Map">
+        select f.f_seq, f.name, 
+            nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv,
+            replace(f.kind,1,'펜션') as kind, f.addr, TO_CHAR(DBMS_LOB.SUBSTR(p.pension_pr, 4000)) pr, p.pension_eng_name, p.pension_img,
+            a.addr2_name, r.addr1_name, f.wi,f.kyung, f.tel, f.website, f.way, p.pension_pickup,
+            p.pension_notice, p.pension_explanation, p.hs_sub_seq, p.cf_sub_seq
+		from FORM f, ADDR2 a, ADDR1 r,CATE ca, ROOM z, PENSION p,
+            (select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+            (select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+		where f.addr2_seq = a.addr2_seq
+            and c.f_seq(+) = f.f_seq
+            and d.f_seq(+) = f.f_seq
+            and f.cate_seq = ca.cate_seq
+            and z.f_seq = f.f_seq
+            and a.addr1_seq = r.addr1_seq
+            and f.f_seq = p.f_seq
+            and ca.cate_seq = 3
+            and f.kind = 1
+            and f.f_seq=#{f_seq}
+        group by f.f_seq, f.name, c.jjim, d.savg, d.rv, f.kind, f.addr,
+            TO_CHAR(DBMS_LOB.SUBSTR(p.pension_pr, 4000)), p.pension_eng_name, p.pension_img,
+            a.addr2_name, r.addr1_name, f.wi,f.kyung, f.tel, f.website, f.way, p.pension_pickup,
+            p.pension_notice, p.pension_explanation, p.hs_sub_seq, p.cf_sub_seq
+	</select>
+	
+	
+	
+	
+	<!-- 모텔 select -->
+	
+	<select id = 'selectMlist' resultType="Map">
+		select f.f_seq, f.name, min(z.room_price) as price,
+        a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+		from FORM f, ADDR2 a, CATE ca, ROOM z,
+		(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+		(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+		where f.addr2_seq = a.addr2_seq
+		and c.f_seq(+) = f.f_seq
+		and d.f_seq(+) = f.f_seq
+        and f.cate_seq = ca.cate_seq
+        and z.f_seq = f.f_seq
+        and ca.cate_seq = 3
+        and f.kind = 3
+        group by f.f_seq, f.name,a.addr2_name, f.intro, f.main_img,
+        c.jjim, d.savg, d.rv
+	</select>
+	
+	<!-- 모텔 숙소만 -->
+	<select id="selectMot" resultType="Map" parameterType="int">
+        select f.f_seq, f.name, 
+            nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv,
+            replace(f.kind,3,'모텔') as kind, f.addr, m.motel_eng_name, m.motel_img,
+            a.addr2_name, r.addr1_name, f.wi,f.kyung, f.tel, f.website, f.way, m.motel_pickup,
+            m.motel_notice, m.motel_explanation, m.hs_sub_seq, m.cf_sub_seq
+		from FORM f, ADDR2 a, ADDR1 r,CATE ca, ROOM z, MOTEL m,
+            (select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+            (select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+		where f.addr2_seq = a.addr2_seq
+            and c.f_seq(+) = f.f_seq
+            and d.f_seq(+) = f.f_seq
+            and f.cate_seq = ca.cate_seq
+            and z.f_seq = f.f_seq
+            and a.addr1_seq = r.addr1_seq
+            and f.f_seq = m.f_seq
+            and ca.cate_seq = 3
+            and f.kind = 3
+            and f.f_seq=#{f_seq}
+        group by f.f_seq, f.name, c.jjim, d.savg, d.rv, f.kind, f.addr,
+             m.motel_eng_name, motel_img,
+            a.addr2_name, r.addr1_name, f.wi,f.kyung, f.tel, f.website, f.way, m.motel_pickup,
+            m.motel_notice, m.motel_explanation, m.hs_sub_seq, m.cf_sub_seq
+	</select>
+	
+	
+	<!-- insert -->
+	
+	<!-- form 등록 -->
+	<insert id="insert" parameterType="form">
+		insert into form values(#{f_seq}, 3, #{kind}, #{name}, #{intro}, #{addr2_seq},
+		#{addr}, #{addr_detail}, #{wi}, #{kyung}, #{way}, #{tel}, #{website}, #{main_img})
+	</insert>
+	
+	<select id="reservation_seq" parameterType="int">
+		select nvl(max(reservation_seq),0)+1 from reservation
+	</select>
+	
+	<!-- 숙소 예약 -->
+	<insert id="rvinsert" parameterType="reservation">
+		<selectKey keyProperty="reservation_seq" resultType="int" order="BEFORE">
+			select reservation_seq.nextval as reservation_seq from dual
+		</selectKey>
+
+		insert into reservation values(#{reservation_seq}, 4, #{reservation_name}, #{reservation_tel}, #{reservation_mail},
+		#{stay_last_name}, #{stay_first_name}, #{stay_sex}, #{stay_birth})
+	</insert>
+</mapper>

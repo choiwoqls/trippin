@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="myclist">
+
+	<!-- [[[[새미]]]] -->
+	<insert id="myclistInsert" parameterType="myclist">
+		insert into myclist values(myclist_seq.nextval,#{s_seq},#{m_seq},#{clist_items_seq})
+	</insert>
+	
+	<select id="myClistOne" parameterType="map" resultType="int">
+		select count(*) from myclist where m_seq=#{m_seq} and s_seq=#{s_seq} and clist_items_seq=#{clist_items_seq}
+	</select>
+	
+	<delete id="deleteMyclist" parameterType="map">
+		delete from myclist where m_seq=#{m_seq} and s_seq=#{s_seq} and clist_items_seq=#{clist_items_seq}
+	</delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

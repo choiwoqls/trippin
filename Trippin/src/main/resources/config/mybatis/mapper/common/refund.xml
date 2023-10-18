@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="refund">
+	
+	<insert id="insert" parameterType="refund">
+		insert into refund values(refund_seq.nextval, #{cancel_seq}, #{fee}, #{money}, #{memo, jdbcType=VARCHAR}, sysdate)
+	</insert>
+	
+	<select id="refund" parameterType="int" resultType="refund">
+		select fee, money, memo, to_char(datetime, 'yyyy-MM-dd HH24:MI:SS') datetime from refund where cancel_seq=#{cancel_seq}
+	</select>
+	
+	<select id="refundDetail" parameterType="map" resultType="map">
+		select tp.tot_money, tp.pay_money, r.fee, r.money, 
+		to_char(r.datetime, 'yyyy.MM.dd HH24:MI:SS') datetime, tp.use_cash
+		from t_purchase tp, refund r, cancel c
+		where tp.t_purchase_seq = #{t_purchase_seq}
+		and tp.t_purchase_seq = c.purchase_no
+		and c.kind = #{kind}
+		and c.cancel_seq = r.cancel_seq
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

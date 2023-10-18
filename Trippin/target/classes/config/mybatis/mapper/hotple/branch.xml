@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="branch">
+	
+	<select id='branchSeq' resultType="branch">
+		select f_seq from branch order by f_seq desc
+	</select>
+	
+	<select id="main" parameterType="int" resultType="int">
+		select nvl(count(*),0) main from branch where f_seq=#{f_seq}
+	</select>
+	
+	<insert id="registerMain" parameterType="int">
+		insert into branch values(branch_seq.nextval, #{f_seq}, null)
+	</insert>
+	
+	<select id="branch" parameterType="int" resultType="branch">
+		select * from branch where f_seq = #{f_seq}
+	</select>
+	
+	<update id="register" parameterType="branch">
+		update branch set branch_no = #{branch_no} where f_seq=#{f_seq}
+	</update>
+	
+	<select id="subList" resultType="int">
+		select * from 
+		 <![CDATA[
+		(select trim(regexp_substr(branch_no, '[^,]+', 1, level)) as branch_no
+        from branch
+        connect by level <= length(branch_no) - length(replace(branch_no, ','))+1)
+        group by branch_no
+        ]]>
+	</select>
+	
+	
+	
+</mapper>
+
+
+
+
+
+

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="f_tips">
+	
+	<!-- 희지 -->
+	<insert id="insert" parameterType="f_tips">
+		insert into f_tips values(f_tips_seq.nextval, #{f_seq}, #{tips_seq}, #{f_tip, jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="oneTip" parameterType="int" resultType="map">
+		select t.tip, t.tips_seq, ft.f_tip, ft.f_tips_seq 
+		from tips t, f_tips ft 
+		where ft.f_seq = #{f_seq} and t.tips_seq = ft.tips_seq
+		order by f_tips_seq
+	</select>
+	
+	<select id="sameTip" parameterType="f_tips" resultType="int">
+		select count(*) cnt from f_tips
+		where f_seq=#{f_seq} and tips_seq=#{tips_seq}
+	</select>
+	
+	<update id="updateTip"  parameterType="f_tips">
+		update f_tips set f_tip=#{f_tip} where f_seq=#{f_seq} and tips_seq=#{tips_seq}
+	</update>
+	
+	<delete id="deleteTip" parameterType="map">
+		delete f_tips 
+		where f_seq = #{f_seq}
+		<if test="newlist != null">
+			and tips_seq not in
+			<foreach collection="newlist" item="t" open="(" separator="," close=")">
+				#{t}
+			</foreach>	
+		</if>
+	</delete> 	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

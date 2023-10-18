@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	
+	<!-- email 인증 관련 빈 등록 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<property name="username" value="trippinyaho@gmail.com"/>
+		<property name="password" value="ncskmbjrleluvtus"/>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+				<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+	<!-- [[[[공통]]]] -->	
+	<bean class="service.member.MemberService" id="memberService">
+		<constructor-arg ref="memberDao" />	
+		<constructor-arg ref="jjimDao" />	
+		<constructor-arg ref="formDao" />	
+		<constructor-arg ref="report_cateDao" />	
+		<constructor-arg ref="reportDao" />	
+		<constructor-arg ref="m_report_cateDao" />	
+		<constructor-arg ref="m_reportDao" />
+		<constructor-arg ref="newplaceDao" />
+		<constructor-arg ref="reviewDao" />
+		<constructor-arg ref="review_likeDao" />
+		<constructor-arg ref="review_cmtDao" />
+		<constructor-arg ref="review_cmt_likeDao" />
+		<constructor-arg ref="revisionDao" />
+		<constructor-arg ref="couponDao" />	
+		<constructor-arg ref="couponlistDao" />	
+		<constructor-arg ref="cashDao" />
+		<constructor-arg ref="mycashDao" />
+		<constructor-arg ref="slogDao" />
+		<constructor-arg ref="slog_cmtDao" />
+		<constructor-arg ref="nuguDao" />
+		<constructor-arg ref="styleDao" />
+		<constructor-arg ref="addr1Dao" />
+		<constructor-arg ref="scheDao" />
+		<constructor-arg ref="slog_likeDao" />
+		<constructor-arg ref="noticelistDao" />	
+		<constructor-arg ref="pointDao" />	
+		<constructor-arg ref="mypointDao" />	
+		<constructor-arg ref="level_pointDao" />	
+		<constructor-arg ref="l_couponDao" />	
+		<constructor-arg ref="ticketDao" />	
+		<constructor-arg ref="ticket_cateDao" />	
+		<constructor-arg ref="tkjjimDao" />	
+	</bean>
+	
+	<bean class="service.addr.AddrService" id="addrService">
+		<constructor-arg ref="addr1Dao"/>
+		<constructor-arg ref="addr2Dao"/>
+	</bean>
+	
+	<bean class="service.admin.AdminService" id="adminService">
+		<constructor-arg ref="memberDao" />	
+		<constructor-arg ref="a_cateDao" />
+		<constructor-arg ref="tour_cateDao" />
+		<constructor-arg ref="addr1Dao" />
+		<constructor-arg ref="level_pointDao" />
+		<constructor-arg ref="couponDao" />
+		<constructor-arg ref="l_couponDao" />
+		<constructor-arg ref="formDao" />
+		<constructor-arg ref="newplaceDao" />	
+		<constructor-arg ref="reviewDao" />
+		<constructor-arg ref="ticketDao" />
+		
+		<constructor-arg ref="csDao" />
+		<constructor-arg ref="cs_subcateDao" />
+		<constructor-arg ref="cs_cateDao" />
+		<constructor-arg ref="revisionDao" />
+		<constructor-arg ref="inquiryDao" />
+		<constructor-arg ref="reportDao" />
+		<constructor-arg ref="m_reportDao" />
+		<constructor-arg ref="m_report_cateDao" />
+		<constructor-arg ref="report_cateDao" />
+		<constructor-arg ref="review_cmtDao" />
+		
+		<constructor-arg ref="cancelDao" />
+		<constructor-arg ref="t_purchaseDao" />
+		<constructor-arg ref="couponlistDao" />
+		<constructor-arg ref="refundDao" />
+		<constructor-arg ref="f_tipsDao" />
+		<constructor-arg ref="tip_keywordDao" />
+		<constructor-arg ref="tipsDao" />
+		
+		<constructor-arg ref="s_reportDao" />
+		<constructor-arg ref="slogDao" />
+		<constructor-arg ref="slog_cmtDao" />
+		<constructor-arg ref="paymentDao" />
+	</bean>
+	
+	<!-- [[[[희지]]]] -->
+	<bean class="service.admin.HotpleService" id="hotpleService">
+		<constructor-arg ref="h_cateDao" />	
+		<constructor-arg ref="addr1Dao" />	
+		<constructor-arg ref="addr2Dao" />	
+		<constructor-arg ref="formDao" />	
+		<constructor-arg ref="hotpleDao" />	
+		<constructor-arg ref="dayDao" />	
+		<constructor-arg ref="hoursDao" />	
+		<constructor-arg ref="menuDao" />
+		<constructor-arg ref="branchDao" />	
+	</bean>
+	
+	<bean class="service.member.PurchaseService" id="purchaseService">
+		<constructor-arg ref="optDao" />
+		<constructor-arg ref="suboptDao" />
+		<constructor-arg ref="ticketDao" />
+		<constructor-arg ref="t_reserverDao" />
+		<constructor-arg ref="couponDao" />
+		<constructor-arg ref="payDao" />
+		<constructor-arg ref="t_amountDao" />
+		<constructor-arg ref="t_purchaseDao" />
+		<constructor-arg ref="couponlistDao" />
+		<constructor-arg ref="ccp_wordDao" />
+		<constructor-arg ref="cancel_cateDao" />
+		<constructor-arg ref="cancelDao" />
+		<constructor-arg ref="refundDao" />
+	</bean>
+	
+	
+	<!-- [[[[새미]]]] -->
+	<bean class="service.member.MyclistService" id="myclistService">
+		<constructor-arg ref="clist_cateDao" />
+		<constructor-arg ref="clist_memoDao" />
+		<constructor-arg ref="myclistDao" />
+	</bean>
+	
+	<bean class="service.member.CsService" id="csService">
+		<constructor-arg ref="csDao" />
+		<constructor-arg ref="cs_subcateDao" />
+		<constructor-arg ref="cs_cateDao" />
+		<constructor-arg ref="memberDao" />
+		<constructor-arg ref="t_reserverDao" />
+		<constructor-arg ref="t_purchaseDao" />
+		<constructor-arg ref="inquiryDao" />
+		<constructor-arg ref="c_inquiryDao" />
+		<constructor-arg ref="paymentDao" />
+	</bean>
+	
+	
+	
+	<!-- [[[[현지]]]] -->
+	<bean class="service.admin.MailSendService" id="mailSendService">
+		<constructor-arg ref="mailSender" />	
+	</bean>
+	
+	<bean class="service.login.LoginService" id="loginService">
+		<constructor-arg ref="memberDao" />	
+	</bean>
+	
+	<bean class="service.admin.TourService" id="tourService">
+		<constructor-arg ref="addr1Dao" />	
+		<constructor-arg ref="addr2Dao" />	
+		<constructor-arg ref="cateDao" />	
+		<constructor-arg ref="dayDao" />	
+		<constructor-arg ref="formDao" />	
+		<constructor-arg ref="hours_cateDao" />	
+		<constructor-arg ref="tip_keywordDao" />	
+		<constructor-arg ref="tipsDao" />	
+		<constructor-arg ref="tourDao" />	
+		<constructor-arg ref="tour_cateDao" />
+		<constructor-arg ref="hoursDao" />
+	</bean>
+
+	<bean class="service.admin.TicketService" id="ticketService">
+		<constructor-arg ref="t_partnerDao" />
+		<constructor-arg ref="ticket_cateDao" />	
+		<constructor-arg ref="ticketDao" />	
+		<constructor-arg ref="include_itemsDao" />	
+		<constructor-arg ref="addr2Dao" />
+	</bean>
+	
+	
+	
+	<!-- [[[[기범]]]] -->
+	<!-- 숙소 -->
+	<bean class="service.admin.AccomService" id="accomService">
+		<constructor-arg ref="roomDao"/>
+		<constructor-arg ref="pensionDao" />
+		<constructor-arg ref="motelDao"/>
+		<constructor-arg ref="addr1Dao"/>
+		<constructor-arg ref="addr2Dao"/>
+		<constructor-arg ref="accomDao"/>
+		<constructor-arg ref="formDao"/>
+	</bean>
+	
+	
+	<!-- [[[[재빈]]]] -->
+	<bean class="service.member.ScheService" id="scheService">
+		<constructor-arg ref="scheDao"/>
+		<constructor-arg ref="styleDao"/>
+		<constructor-arg ref="nuguDao"/>
+		<constructor-arg ref="cityDao"/>
+		<constructor-arg ref="inviteDao"/>
+		<constructor-arg ref="planDao"/>		
+		<constructor-arg ref="myplaceDao"/>		
+		<constructor-arg ref="formDao"/>		
+		<constructor-arg ref="cateDao"/>		
+		<constructor-arg ref="memberDao"/>	
+	</bean>
+	
+	<bean class="service.member.CostService" id="costService">
+		<constructor-arg ref="costDao"/>
+		<constructor-arg ref="cost_detailsDao"/>
+		<constructor-arg ref="moneylistDao"/>
+		<constructor-arg ref="calculateDao"/>
+	</bean>
+	
+	<bean class="service.slog.SlogService" id="slogService">
+		<constructor-arg ref="slogDao"/>
+		<constructor-arg ref="day_slogDao"/>
+		<constructor-arg ref="place_slogDao"/>
+		<constructor-arg ref="slog_addDao"/>
+		<constructor-arg ref="slog_likeDao"/>
+		<constructor-arg ref="slog_cmtDao"/>
+		<constructor-arg ref="slog_cmt_likeDao"/>
+		<constructor-arg ref="nuguDao"/>
+		<constructor-arg ref="styleDao"/>
+	</bean>
+	
+	
+	
+	
+
+</beans>

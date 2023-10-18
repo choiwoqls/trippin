@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="form">
+	
+	<insert id="insert" parameterType="form">
+		insert into form values(#{f_seq}, #{cate_seq}, #{kind}, #{name}, #{intro}, #{addr2_seq},
+		#{addr}, #{addr_detail}, #{wi}, #{kyung}, #{way}, #{tel}, #{website}, #{main_img})
+	</insert>
+	
+	<select id="nowSeq" resultType="int">
+		select nvl(max(f_seq),0)+1 from form
+	</select>
+	
+	
+	<!-- 재빈 -->
+	<select id="selectScheList" resultType="Map" parameterType="int">
+		select f.f_seq, f.name, f.cate_seq,
+		        CASE
+		            WHEN ca.cate_seq = 1 THEN tc.t_cate_name
+		            WHEN ca.cate_seq = 2 THEN hc.h_cate_name
+		            ELSE NULL
+		        END AS kind_name,
+		        a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+				from FORM f, ADDR2 a, CATE ca, TOUR_CATE tc, H_CATE hc,
+				(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+				(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+				where f.addr2_seq = a.addr2_seq
+				and f.kind = tc.t_cate_seq
+		        and f.kind = hc.h_cate_seq
+				and c.f_seq(+) = f.f_seq
+				and d.f_seq(+) = f.f_seq
+		        and f.cate_seq = ca.cate_seq
+		        and ca.cate_seq = #{cate_seq}
+				order by f.f_seq desc
+	</select>
+	
+	
+	<!-- 2023-08-13 -->
+	<select id="selectAllScheList" resultType="Map" >
+		select f.f_seq, f.name, f.cate_seq,
+		        CASE
+		            WHEN ca.cate_seq = 1 THEN tc.t_cate_name
+		            WHEN ca.cate_seq = 2 THEN hc.h_cate_name
+		            ELSE NULL
+		        END AS kind_name,
+		        a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+				from FORM f, ADDR2 a, CATE ca, TOUR_CATE tc, H_CATE hc,
+				(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+				(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+				where f.addr2_seq = a.addr2_seq
+				and f.kind = tc.t_cate_seq
+		        and f.kind = hc.h_cate_seq
+				and c.f_seq(+) = f.f_seq
+				and d.f_seq(+) = f.f_seq
+		        and f.cate_seq = ca.cate_seq
+		        and a.addr1_seq = #{addr1_seq}
+				order by f.f_seq desc
+	</select>
+	
+	<!-- 2023/08/14 -->
+	<select id="afList" resultType="Map">
+		select f.f_seq, f.name, f.cate_seq,
+		        CASE
+		            WHEN ca.cate_seq = 1 THEN tc.t_cate_name
+		            WHEN ca.cate_seq = 2 THEN hc.h_cate_name
+		            ELSE NULL
+		        END AS kind_name,
+		        a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+				from FORM f, ADDR2 a, CATE ca, TOUR_CATE tc, H_CATE hc,
+				(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+				(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+				where f.addr2_seq = a.addr2_seq
+				and f.kind = tc.t_cate_seq
+		        and f.kind = hc.h_cate_seq
+				and c.f_seq(+) = f.f_seq
+				and d.f_seq(+) = f.f_seq
+		        and f.cate_seq = ca.cate_seq
+				order by f.cate_seq asc
+	</select>
+	
+	<select id="selectAddrForm"  parameterType="Map" resultType="Map">
+			select f.*,
+        CASE
+            WHEN ca.cate_seq = 1 THEN tc.t_cate_name
+            WHEN ca.cate_seq = 2 THEN hc.h_cate_name
+            ELSE NULL
+        END AS kind_name,
+        a.*, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+		from FORM f, ADDR2 a, CATE ca, TOUR_CATE tc, H_CATE hc,
+		(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+		(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+		where f.addr2_seq = a.addr2_seq
+		and f.kind = tc.t_cate_seq
+        and f.kind = hc.h_cate_seq
+		and c.f_seq(+) = f.f_seq
+		and d.f_seq(+) = f.f_seq
+        and f.cate_seq = ca.cate_seq
+        and ca.cate_seq = #{cate_seq}	
+        and a.addr1_seq = #{addr1_seq}
+		order by f.f_seq
+	</select>
+	
+	
+	<!-- 현지 -->
+	<select id="selectTour" resultType="Map" parameterType="int">
+		select f.*, tc.t_cate_name, c.cate_name, a.addr2_name, nvl(x.JJIM, 0) jj, nvl(y.savg, 0) savg, nvl(y.RV, 0) rv,t.*
+		from FORM f, ADDR2 a, TOUR_CATE tc, TOUR t, CATE c,
+		(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) x, 
+		(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) y
+		where c.cate_seq = f.cate_seq 
+        and f.addr2_seq = a.addr2_seq
+		and f.kind = tc.t_cate_seq
+		and x.f_seq(+) = f.f_seq
+		and y.f_seq(+) = f.f_seq
+        and f.f_seq = t.f_seq
+        and f.f_seq = #{f_seq}
+	</select>
+	
+	<select id="selectForm" parameterType="int" resultType="Map">
+		select f.main_img, f.name, f.f_seq, f.cate_seq,
+		CASE
+			WHEN f.cate_seq = 1 THEN tc.t_cate_name
+			WHEN f.cate_seq = 2 THEN hc.h_cate_name
+			ELSE NULL
+		END AS kind_name,
+		a1.addr1_name, a2.addr2_name
+		from FORM f, ADDR1 a1, ADDR2 a2, TOUR_CATE tc, H_CATE hc
+		where f.kind = tc.t_cate_seq
+		and f.kind = hc.h_cate_seq
+		and f.addr2_seq = a2.addr2_seq
+		and a2.addr1_seq = a1.addr1_seq
+		and f.f_seq = #{f_seq}
+	</select>
+	
+	
+	<!-- [[[[희지]]]] -->
+	<!-- cate별 리스트 뽑기 -->
+	<select id="selectList" resultType="Map" parameterType="map">
+		select * from
+			(select rownum rn, n.* from
+				(select f.f_seq, f.name, f.cate_seq,
+		        CASE
+		            WHEN ca.cate_seq = 1 THEN tc.t_cate_name
+		            WHEN ca.cate_seq = 2 THEN hc.h_cate_name
+		            ELSE NULL
+		        END AS kind_name,
+		        <if test="cate_seq == 2">
+		        	nvl(b.b_cnt, 0) b_cnt,
+		        </if>
+		        a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+				from FORM f, ADDR2 a, CATE ca, TOUR_CATE tc, H_CATE hc,
+				(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+				(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+				<if test="cate_seq == 2">
+					,(select f_seq, count(*) b_cnt from
+						(select distinct f_seq, trim(regexp_substr(branch_no, '[^,]+', 1, level)) as branch_no from branch
+						where branch_no is not null
+						connect by level <![CDATA[ <= ]]> length(branch_no) - length(replace(branch_no, ','))+1)
+						group by f_seq) b
+				</if>
+				where f.addr2_seq = a.addr2_seq
+				and f.kind = tc.t_cate_seq
+		        and f.kind = hc.h_cate_seq
+				and c.f_seq(+) = f.f_seq
+				and d.f_seq(+) = f.f_seq
+		        and f.cate_seq = ca.cate_seq
+		        <if test="cate_seq == 2">
+			        and f.f_seq = b.f_seq(+)
+		        </if>
+		        and ca.cate_seq = #{cate_seq}
+				order by f.f_seq desc)n)
+		    <![CDATA[
+				where rn >= #{first} and rn <= #{last}
+			]]>
+	</select>
+	
+	<!-- 카테고리 종류 관광지 -->
+	<select id="tourCate" parameterType="int" resultType="String">
+		select t_cate_name from tour_cate where t_cate_seq = #{t_cate_seq}
+	</select>	
+	
+	<!-- 카테고리 종류 맛집 -->
+	<select id="hotpleCate" parameterType="int" resultType="String">
+		select h_cate_name from h_cate where h_cate_seq = #{h_cate_seq}
+	</select>	
+	
+	<!-- 카테고리 종류 숙소 -->
+	<select id="accCate" parameterType="int" resultType="String">
+		select a_cate_name from a_cate where a_cate_seq = #{a_cate_seq}
+	</select>	
+	
+	<!-- 관리자용 수정 페이지 접근 용 -->
+	<select id="form" parameterType="int" resultType="form">
+		select f.*, a2.addr1_seq from form f, addr2 a2 
+		where f_seq=#{f_seq} and a2.addr2_seq = f.addr2_seq
+	</select>
+	
+	<!-- 수정 -->
+	<update id="update" parameterType="form">
+		update form set 
+		kind=#{kind}, name=#{name}, intro=#{intro, jdbcType=VARCHAR}, 
+		addr2_seq=#{addr2_seq}, addr=#{addr}, addr_detail=#{addr_detail, jdbcType=VARCHAR}, 
+		wi=#{wi}, kyung=#{kyung}, way=#{way, jdbcType=VARCHAR}, 
+		tel=#{tel, jdbcType=VARCHAR}, website=#{website, jdbcType=VARCHAR}
+		where f_seq = #{f_seq}
+	</update>
+	
+	<!-- 관리자가 보는 cate별 리스트 -->
+	<select id="adminList" parameterType="map" resultType="Map">
+		select * from
+			(select rownum rn, n.* from
+			(select f.f_seq, f.name, 
+			CASE
+	            WHEN c.cate_seq = 1 THEN tc.t_cate_name
+			    WHEN c.cate_seq = 2 THEN hc.h_cate_name
+	            ELSE NULL
+			END AS kind_name
+			, addr2_name, addr, tel
+			from Form f, tour_cate tc, h_cate hc, addr2 a, cate c
+			where f.kind = tc.t_cate_seq
+			and f.kind = hc.h_cate_seq
+			and f.cate_seq = c.cate_seq
+			and c.cate_seq = #{cate_seq}
+			and a.addr2_seq = f.addr2_seq
+			order by f.f_seq desc)n)
+		<![CDATA[
+			where rn >= #{first} and rn <= #{last}
+		]]>
+	</select>
+	
+	<!-- cate별 업체 수 (+관리자도 이용)-->
+	<select id="count" resultType="int" parameterType="int">
+		select count(*) from
+			(select f.f_seq, f.name, f.cate_seq,
+		        CASE
+		            WHEN ca.cate_seq = 1 THEN tc.t_cate_name
+		            WHEN ca.cate_seq = 2 THEN hc.h_cate_name
+		            ELSE NULL
+		        END AS kind_name,
+		        a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+				from FORM f, ADDR2 a, CATE ca, TOUR_CATE tc, H_CATE hc,
+				(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+				(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+				where f.addr2_seq = a.addr2_seq
+				and f.kind = tc.t_cate_seq
+		        and f.kind = hc.h_cate_seq
+				and c.f_seq(+) = f.f_seq
+				and d.f_seq(+) = f.f_seq
+		        and f.cate_seq = ca.cate_seq
+		        and ca.cate_seq = #{cate_seq})
+	</select>
+	
+	<!-- 맛집 상세 -->
+	<select id="selectHotple" resultType="Map" parameterType="int">
+		select f.*, hc.h_cate_name, c.cate_name, a.addr2_name, nvl(x.JJIM, 0) jj, nvl(y.savg, 0) savg, nvl(y.RV, 0) rv,h.*
+		from FORM f, ADDR2 a, H_CATE hc, Hotple h, CATE c,
+		(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) x, 
+		(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) y
+		where c.cate_seq = f.cate_seq 
+        and f.addr2_seq = a.addr2_seq
+		and f.kind = hc.h_cate_seq
+		and x.f_seq(+) = f.f_seq
+		and y.f_seq(+) = f.f_seq
+        and f.f_seq = h.f_seq
+        and f.f_seq = #{f_seq}
+	</select>
+	
+	<!-- 폼 삭제(참조테이블은 delete on cascade) -->
+	<delete id="delete" parameterType="int">
+		delete form where f_seq = #{f_seq}
+	</delete>
+	
+	<!-- 메인이미지 삭제 전 경로 알아내기 -->
+	<select id="path" parameterType="int" resultType="String">
+		select main_img from form where f_seq = #{f_seq}
+	</select>
+	
+	<!-- 본점 -->
+	<select id="headList" parameterType="map" resultType="map">
+		select f.f_seq, f.name, a1.addr1_name, a2.addr2_name, f.addr
+		from form f, addr1 a1, addr2 a2, branch b
+		where f.name like '%${name}%'
+		and f.f_seq = b.f_seq
+		and f.addr2_seq = a2.addr2_seq
+		and a2.addr1_seq = a1.addr1_seq
+	</select>
+	
+	<!-- 지점 -->
+	<select id="branches" parameterType="int" resultType="map">
+		select f.f_seq, f.name, f.cate_seq, hc.h_cate_name,
+		a.addr2_name, f.intro, f.main_img, nvl(c.JJIM, 0) jj, nvl(d.savg, 0) savg, nvl(d.RV, 0) rv
+		from FORM f, ADDR2 a, CATE ca, TOUR_CATE tc, H_CATE hc, 
+		(select count(*) JJIM, j.f_seq from JJIM j, FORM f where j.f_seq = f.f_seq group by j.f_seq) c, 
+		(select avg(r.stars) savg, count(*) RV, r.f_seq from REVIEW r, FORM f where r.f_seq = f.f_seq group by r.f_seq) d
+		where f.addr2_seq = a.addr2_seq
+		and f.kind = tc.t_cate_seq
+		and f.kind = hc.h_cate_seq
+		and c.f_seq(+) = f.f_seq
+		and d.f_seq(+) = f.f_seq
+		and f.cate_seq = ca.cate_seq
+		and (f.f_seq = #{f_seq} or f.f_seq in (
+		<![CDATA[
+			select trim(regexp_substr(branch_no, '[^,]+', 1, level)) as branch_no
+			from branch where f_seq = #{f_seq}
+			connect by level <= length(branch_no) - length(replace(branch_no, ','))+1
+		]]>))
+	</select>
+	
+	
+	<!-- 새미 -->
+	<select id="formList" resultType="form">
+		select c.cate_name,f.* from form f, cate c where f.cate_seq=c.cate_seq
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

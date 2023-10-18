@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cancel">
+	
+	<insert id="insert" parameterType="cancel">
+		insert into cancel values(cancel_seq.nextval, #{m_seq}, #{kind}, #{purchase_no}, 
+		#{cancel_cate_seq}, #{content, jdbcType=VARCHAR}, #{cancel_percent}, sysdate, 0)
+	</insert>
+	
+	<select id="cancelStatus" parameterType="cancel" resultType="Integer">
+		select status from cancel where kind=#{kind} and purchase_no=#{purchase_no}
+	</select>
+	
+	<select id="cancel" parameterType="cancel" resultType="cancel">
+		select c.cancel_seq, c.status,c.cancel_percent ,
+		 cc.cancel_cate_name, c.datetime
+		from cancel c, cancel_cate cc 
+		where kind=#{kind} and purchase_no=#{purchase_no}
+		and c.cancel_cate_seq = cc.cancel_cate_seq
+	</select>
+	
+	<select id="cancelList" resultType="map" parameterType="map">
+		select * from
+			(select rownum rn, n.* from
+				(select c.cancel_seq, t.t_purchase_seq, m.m_name, c.kind, t.serial_no, c.cancel_percent, to_char(c.datetime, 'yyyy.MM.dd HH24:MI:SS') datetime, c.status
+				from cancel c, t_purchase t, member m
+				where m.m_seq = c.m_seq and t.t_purchase_seq = c.purchase_no
+				<if test="type=='m_name' or type=='serial_no' ">
+					and ${type} like '%${word}%'				
+				</if>
+				<if test="type=='status' or type=='kind'">
+					and c.${type} = #{word}
+				</if>
+				order by c.cancel_seq desc)n)
+		<![CDATA[
+			where rn >= #{first} and rn <= #{last}
+		]]>
+	</select>
+	
+	<select id="cancelCount" resultType="int" parameterType="map">
+		select count(*) from
+			(select c.cancel_seq, m.m_name, c.kind, t.serial_no, c.cancel_percent, to_char(c.datetime, 'yyyy.MM.dd HH24:MI:SS') datetime, c.status
+			from cancel c, t_purchase t, member m
+			where m.m_seq = c.m_seq and t.t_purchase_seq = c.purchase_no
+			<if test="type=='m_name' or type=='serial_no' ">
+				and ${type} like '%${word}%'				
+			</if>
+			<if test="type=='status' or type=='kind'">
+				and c.${type} = #{word}
+			</if>
+			order by c.cancel_seq desc)
+	</select>
+	
+	<update id="cancelFinish" parameterType="int">
+		update cancel set status = 1 where cancel_seq = #{cancel_seq}
+	</update>
+	
+</mapper>

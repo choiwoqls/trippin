@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clist_memo">
+	
+	
+	<insert id="clistMemoAdd" parameterType="clist_memo">
+		insert into clist_memo values(clist_memo_seq.nextval,#{s_seq},#{m_seq}
+		<if test="clist_cate_seq!=0">
+		,#{clist_cate_seq}
+		</if>
+		<if test="clist_cate_seq==0">
+		,null
+		</if>
+		,#{memo})
+	</insert>
+	
+	<select id="ClistMemoOne" resultType="clist_memo" parameterType="map">
+		select * from clist_memo
+		where
+		clist_cate_seq=#{clist_cate_seq}
+		and
+		m_seq = #{m_seq}
+		and
+		s_seq = #{s_seq}
+	</select>
+	
+	<select id="ClistMemoAllOne" resultType="clist_memo" parameterType="map">
+		select * from clist_memo
+		where
+		clist_cate_seq is null
+		and
+		m_seq = #{m_seq}
+		and
+		s_seq = #{s_seq}
+	</select>
+	
+	<update id="clistMemoUpdate" parameterType="clist_memo">
+		update clist_memo set memo=#{memo} where clist_memo_seq=#{clist_memo_seq} 
+	</update>
+	
+	<delete id="clistMemoDelete" parameterType="clist_memo">
+		delete clist_memo where clist_memo_seq=#{clist_memo_seq}
+	</delete>
+	
+
+
+
+</mapper>
+
+

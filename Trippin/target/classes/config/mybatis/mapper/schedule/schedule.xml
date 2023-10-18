@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sche">
+	
+	
+	<!-- [[[[재빈]]]] -->
+	<!-- 시퀀스 -->
+	<select id="sche_seq" resultType="int">
+		select s_seq.nextval from dual
+	</select>
+	
+	<!-- 회원 일정 리스트 -->
+	<select id="mScheList" parameterType="int" resultType="Map">
+		select a.su, s.lastday - s.firstday + 1 as day, to_char(s.firstday, 'yyyy.MM.dd')firstday, to_char(s.lastday, 'yyyy.MM.dd')lastday, s.*, i.*  
+		from schedule s, invite i, (select s.s_seq, count(*)as su from schedule s, invite i, city c where s.s_seq = i.s_seq and s.s_seq = c.s_seq and i.receiver_seq = #{m_seq} group by s.s_seq) a 
+		where i.s_seq = s.s_seq
+		and s.lastday >= to_date(to_char(sysdate, 'yyyy.MM.dd'),'yyyy.MM.dd')
+		and a.s_seq = s.s_seq
+		and i.status = 2
+		and i.receiver_seq = #{m_seq}
+		order by s.firstday asc
+	</select>
+	
+	<!-- 회원 일정_날짜 리스트 -->
+	<select id="m_sche_day" parameterType="int" resultType="sche">
+		select s.firstday, s.lastday from schedule s , invite i where s.s_seq = i.s_seq and i.status = 2 and i.receiver_seq =#{receiver_seq}
+	</select>
+
+	<!-- 새로운 일정 데이터 -->	
+	<insert id="newSche" parameterType="sche">
+		insert into schedule values(#{s_seq}, #{partnerlist}, #{firstday}, #{lastday}, #{nugu_seq}, #{style_seq}, #{title})
+	</insert>
+	
+	<!-- 일정 정보 -->
+	<select id="scheInfo" parameterType="int" resultType="Map">
+		select to_char(s.firstday, 'yyyy.MM.dd') firstday, to_char(s.lastday, 'yyyy.MM.dd') lastday, s.lastday - s.firstday + 1 as day, ceil(firstday - to_date(to_char(sysdate, 'yyyy.MM.dd'),'yyyy.MM.dd')) as dday,  ceil(lastday - to_date(to_char(sysdate, 'yyyy.MM.dd'),'yyyy.MM.dd') + 1) as dlast, s.*,  a.* 
+		from schedule s, (select s_seq, count(*)as cnt from invite where status = 2 group by s_seq) a 
+		where a.s_seq = s.s_seq 
+		and s.s_seq = #{s_seq}
+	</select>
+	
+	<!-- 일정 데이터 삭제 -->
+	<delete id="delSche" parameterType="int">
+		delete schedule where s_seq = #{s_seq}
+	</delete>
+	
+	<!-- 일정 제목 수정 -->
+	<update id="reTitle" parameterType="sche">
+		update schedule set title = #{title} where s_seq = #{s_seq}
+	</update>
+	
+	<!-- 일정 파트너리스트 출력 -->
+	<select id="selectPartner" parameterType="int" resultType="String">
+		select partnerlist from schedule where s_seq = #{s_seq}
+	</select>
+	
+	<!-- 일정 파트너리스트 수정 -->
+	<update id="rePartner" parameterType="sche">
+		update schedule set partnerlist = #{partnerlist} where s_seq= #{s_seq}
+	</update>
+	
+	<!-- 2023-08-16 -->
+	<!-- 일정 날짜 수 -->
+	<select id="scheDay" parameterType="int" resultType="int">
+		select (lastday-firstday+1)as day from schedule where s_seq = #{s_seq}
+	</select>
+
+	<!-- 일정 날짜 요일 -->
+	<select id="schedy" parameterType="Map" resultType="Map">
+		select to_char(firstday+#{su}, 'MM.dd')as day , to_char(firstday+#{su}, 'dy') as dy, to_char(firstday+#{su}, 'yyyy.MM.dd')as ydate  from schedule where s_seq= #{s_seq}
+	</select>
+	
+	<!-- 2023-08-30 -->
+	<select id="lastSche" parameterType="int" resultType="Map">
+		select a.su, s.lastday - s.firstday + 1 as day, to_char(s.firstday, 'yyyy.MM.dd')firstday, to_char(s.lastday, 'yyyy.MM.dd')lastday, s.*, i.*  
+		from schedule s, invite i, (select s.s_seq, count(*)as su from schedule s, invite i, city c where s.s_seq = i.s_seq and s.s_seq = c.s_seq and i.receiver_seq = #{m_seq} group by s.s_seq) a 
+		where i.s_seq = s.s_seq
+		and s.lastday+1 <![CDATA[ < ]]> sysdate
+		and a.s_seq = s.s_seq
+		and i.status = 2
+		and i.receiver_seq = #{m_seq}
+		order by s.firstday asc
+	</select>
+
+
+	
+	<!-- [[[[새미]]]] -->
+	<select id="schSelectOne" resultType="sche" parameterType="int">
+	    select * from schedule where s_seq=#{s_seq}
+	</select>
+	
+	
+	
+	<!-- [[[[현지]]]] -->
+	<select id="fromScheToSlog" resultType="Map" parameterType="int">
+		select to_char(firstday, 'MM') month, lastday - firstday as night, lastday - firstday + 1 as day
+		from SCHEDULE where s_seq = #{s_seq}
+	</select>
+	
+	
+	<!-- [[[[희지]]]] -->
+	<select id="scheTitle" parameterType="int" resultType="String">
+		select title from schedule where s_seq=#{s_seq}
+	</select>
+	
+	<select id="myIngSche" parameterType="int" resultType="map">
+		select s.s_seq, s.partnerlist, ceil(s.firstday - sysdate) as dday
+        from schedule s, invite i
+        where i.receiver_seq = #{m_seq}
+        and s.lastday >= to_date(to_char(sysdate, 'yyyy.MM.dd'),'yyyy.MM.dd')
+        and i.status = 2
+        and i.s_seq = s.s_seq
+	</select>
+	
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="m_report">
+	
+	<!-- [[[[희지]]]] -->
+	<insert id="insert" parameterType="m_report">
+		insert into m_report values(m_report_seq.nextval, #{m_report_cate_seq}, #{bad_seq},
+		#{m_seq}, #{email}, #{content}, sysdate, 0, null, null)
+	</insert>
+	
+	
+	
+	<!-- [[[[새미]]]] -->
+	<select id="mReportLsit" resultType="m_report" parameterType="map">
+		select * from
+			(
+			select rownum rn, t.* from
+				(
+				select
+				m.*,mc.m_report_cate_name,mc.score,mb.m_nickname
+				from m_report m, m_report_cate mc,member mb
+				where mc.m_report_cate_seq = m.m_report_cate_seq
+				and
+				m.bad_seq = mb.m_seq
+				<if test="type!=null">
+					and ${type} like '%${word}%'
+				</if>
+				order by m.m_report_seq desc
+				)t
+				)
+				<![CDATA[
+					where rn >= #{first} and rn <= #{last}
+				]]>
+	</select>
+	
+	<select id="m_reportOne" resultType="Map" parameterType="map">
+		select
+		mb.m_nickname,mc.m_report_cate_name,mc.score,mb.m_email,m.result,m.memo,
+		m.m_report_seq,m.bad_seq,m.content
+		from m_report m,m_report_cate mc,member mb
+		where
+		mb.m_seq = m.bad_seq and
+		m.m_report_cate_seq= mc.m_report_cate_seq
+		and m.bad_seq=#{bad_seq} and m.m_report_seq=#{m_report_seq}
+	</select>
+	
+	<select id="mlistTotal" resultType="int" parameterType="map">
+		select count(*) from
+		m_report m, m_report_cate mc,member mb
+		where mc.m_report_cate_seq = m.m_report_cate_seq
+		and m.bad_seq = mb.m_seq
+		<if test="type!=null">
+			and ${type} like '%${word}%'
+		</if>
+		order by m.m_report_seq desc
+	</select>
+	
+	<!-- 승인/부적격 업데이트 -->
+	<update id="mrpUpResult" parameterType="m_report">
+		update m_report set
+		result=#{result},
+		resultdate=sysdate
+		where m_report_seq =#{m_report_seq}
+	</update>
+	
+	<!-- 메모 업데이트 -->	
+	<update id="mrpUpMemo" parameterType="m_report">
+		update m_report set
+		memo=#{memo, jdbcType=VARCHAR}
+		where m_report_seq = #{m_report_seq}
+	</update>
+
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

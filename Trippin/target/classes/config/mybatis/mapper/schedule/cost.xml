@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cost">
+
+	<select id="costSeq" resultType="int">
+		select cost_seq.nextval from dual
+	</select>
+ 
+	<select id="costInfo" parameterType="int" resultType="cost">
+		select *from cost where cost_seq = #{cost_seq}
+	</select>
+
+	<select id="reCostMList" parameterType="Map" resultType="Map">
+		select m.m_name, m.m_seq as mno, d.*, i.* from invite i, cost_details d, member m
+		where d.cost_seq(+) = #{cost_seq}
+		and i.receiver_seq(+) = m.m_seq
+		and i.s_seq(+) = #{s_seq}
+		and m.m_seq = d.m_seq(+) 
+		and not (d.cost_seq is null and i.receiver_seq is null)
+		and not (d.pay_money = 0 and d.dutch_money = 0 and i.invite_seq is null)
+	</select>
+	
+	<select id="fmoney" parameterType="int" resultType="int">
+		select tot_money from cost where cost_seq = #{cost_seq}
+	</select>
+	
+	<select id="dayCostList" parameterType="Map" resultType="Map">
+		select to_char(tot_money, 'FM999,999,999,999,999')as mn, c.* , l.* 
+		from cost c, 
+		(select  m.m_name, b.* from member m, 
+		(select cost_seq, min(cost_details_seq)as cost_details_seq from cost_details group by cost_seq)a, 
+		(select cost_seq, count(*)-1 as su from cost_details group by cost_seq) b,
+		cost_details d
+		where a.cost_details_seq = d.cost_details_seq
+		and m.m_seq = d.m_seq
+		and b.cost_seq = a.cost_seq) l
+		where c.s_seq = #{s_seq} 
+        and l.cost_seq = c.cost_seq
+		and c.day_no = #{day_no}
+		and not (c.m_seq != #{m_seq} and c.alone = 1)
+		order by num asc
+	</select>
+	
+	<select id="dayCostAlone" parameterType="Map" resultType="Map">
+		select to_char(tot_money, 'FM999,999,999,999,999')as mn, cost.* from cost 
+		where s_seq = #{s_seq} 
+		and day_no = #{day_no}
+		and alone = 1
+		and m_seq = #{m_seq} 
+		order by num asc
+	</select>
+
+	<!-- 전체 날짜 전체 비용 -->
+	<select id="totMoney" parameterType="Map" resultType="int">
+		select sum(tot_money) from cost 
+		where s_seq = #{s_seq}
+		and not (m_seq != #{m_seq} and alone = 1)
+		
+	</select>
+	
+	<!-- 전체 날짜 나만의 비용 -->
+	<select id="totMoneyAlone" parameterType="Map" resultType="int">
+		select sum(tot_money) from cost 
+		where s_seq = #{s_seq}
+		and m_seq = #{m_seq}
+		and alone =1 
+	</select>
+
+	<!-- 선택 날짜 전체 비용 -->
+	<select id="totDayMoney" parameterType="Map" resultType="int">
+		select sum(tot_money)from cost 
+		where s_seq = #{s_seq}
+		and day_no = #{day_no}
+		and not (m_seq != #{m_seq} and alone = 1)
+	</select>
+
+	<!-- 선택 날짜 나만의 비용 -->
+	<select id="totDayMoneyAlone" parameterType="Map" resultType="int">
+		select sum(tot_money) from cost 
+		where s_seq = #{s_seq}
+		and day_no = #{day_no}
+		and m_seq = #{m_seq}
+		and alone = 1
+	</select>
+	
+	<select id="costDayNum" parameterType="Map" resultType="int">
+		select nvl(max(num), 0)as num from cost where s_seq = #{s_seq} and day_no = #{day_no}
+	</select>
+	
+	<insert id="insertCost" parameterType="cost">
+		insert into cost values(#{cost_seq}, #{s_seq}, #{m_seq}, #{day_no}, #{num}, #{content}, #{kind}, #{tot_money}, #{place_name}, #{alone}, #{payment}, #{cost_img})
+	</insert>
+
+	<delete id="delCost" parameterType="int">
+		delete cost where cost_seq = #{cost_seq}
+	</delete>
+
+	<update id="reCost" parameterType="cost" >
+		update cost set day_no = #{day_no} , content = #{content}, kind = #{kind}, tot_money = #{tot_money}, place_name = #{place_name},
+		alone = #{alone}, payment = #{payment} where cost_seq = #{cost_seq}
+	</update>
+
+	<!-- 2023/08/28 -->
+	<select id="kindPer" parameterType="int" resultType="Map">
+		select a.s_seq, c.kind, round(tm/tot*100,1) as per, to_char(c.tm, 'FM999,999,999,999,999') as tm, to_char(tot, 'FM999,999,999,999,999')as tot
+		from (select s_seq, sum(tot_money)as tot from cost where alone = 0 group by s_seq)a ,
+		(select kind, sum(tot_money)as tm from cost where s_seq = #{s_seq} and alone = 0 group by kind) c
+		where a.s_seq = #{s_seq}
+	</select>
+	
+	<select id="maxKind" parameterType="int" resultType="int">
+		select kind from 
+		(select kind, sum(tot_money)as tm from cost where s_seq = #{s_seq} and alone = 0 group by kind)a,
+		(select max(a.tm)as tm1 from cost c, (select kind, sum(tot_money)as tm from cost where s_seq = #{s_seq} and alone = 0 group by kind) a
+		where c.kind = a.kind) b
+		where a.tm = b.tm1
+	</select>
+	
+	<select id="sumMon" parameterType="int" resultType="String">
+		select to_char(sum(tot_money), 'FM999,999,999,999,999')as sum from cost where s_seq = #{s_seq} and alone = 0
+	</select>
+	
+	<select id="kindDetail" parameterType="Map" resultType="Map">
+		select cost.*, to_char(tot_money, 'FM999,999,999,999,999')as tm from cost where s_seq = #{s_seq} and alone = 0 and day_no = #{day_no} 
+		<if test="type != null">
+			<if test="type == 'tot'">
+			</if>
+			<if test="type !='tot'">
+				 and kind = #{kind}			
+			</if>
+		</if>
+		order by cost_seq asc
+	</select>
+	
+	<select id="kindTM" parameterType="Map" resultType="String">
+		select to_char(sum(tot_money), 'FM999,999,999,999,999')as sum from cost where s_seq = #{s_seq} and alone = 0
+		<if test="type != null">
+			<if test="type == 'tot'">
+			</if>
+			<if test="type !='tot'">
+				 and kind = #{kind}			
+			</if>
+		</if>
+	</select>
+	
+	<select id="ckList" parameterType="int" resultType="int">
+		select kind from cost where s_seq = #{s_seq} and alone = 0 group by kind
+	</select>
+
+	<select id="calculateList" parameterType="int" resultType="Map">
+		select b.m_name, m.* ,to_char(m.m_tot_pay, 'FM999,999,999,999,999')as pm, to_char(m.m_tot_dutch, 'FM999,999,999,999,999')as dm, (m_tot_pay-m_tot_dutch)as tot, i.invite_seq 
+		from moneylist m, invite i, member b 
+		where m.s_seq = #{s_seq}
+		and b.m_seq = m.m_seq
+		and m.s_seq = i.s_seq(+)
+		and m.m_seq = i.receiver_seq(+)
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

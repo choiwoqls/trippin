@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="l_coupon">
+	
+	<insert id="insert" parameterType="l_coupon">
+		insert into l_coupon values(l_coupon_seq.nextval, #{name}, #{level_no},
+		#{valid_date}, #{type}, #{amount}, #{max_min},
+		#{use}, 0)
+	</insert>
+	
+	<select id="l_oneCoupon" parameterType="int" resultType="l_coupon">
+		select * from l_coupon where l_coupon_seq = #{l_coupon_seq}
+	</select>
+	
+	<select id="totCount" resultType="int">
+		select count(*) from
+        (select l_coupon_seq, name, level_no, valid_date, type, amount, max_min, use, status from l_coupon
+       	order by status asc, coupon_seq desc)
+	</select>
+	
+	<update id="lc_re" parameterType="int">
+		update l_coupon set status=0 where l_coupon_seq=#{l_coupon_seq} and status=1
+	</update>
+	
+	<update id="lc_stop" parameterType="int">
+		update l_coupon set status=1 where l_coupon_seq=#{l_coupon_seq} and status=0
+	</update>
+	
+	<update id="lc_end" parameterType="int">
+		update l_coupon set status=2 where l_coupon_seq=#{l_coupon_seq}
+	</update>
+	
+	<select id="levelCoupon" parameterType="int" resultType="l_coupon">
+		select l_coupon_seq, valid_date from l_coupon where level_no=#{level_no}
+	</select>
+
+</mapper>
+
+
+
+
+
+
+

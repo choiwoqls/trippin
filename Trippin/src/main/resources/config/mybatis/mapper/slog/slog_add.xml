@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="slog_add">
+
+	<select id="slogAddCheck" parameterType="slog_add" resultType="int">
+		select slog_add_seq from slog_add where m_seq = #{m_seq} and slog_seq = #{slog_seq}
+	</select>
+	
+	<insert id="newSlogAdd" parameterType="slog_add">
+		insert into slog_add values(slog_add_seq.nextval, #{slog_seq}, #{m_seq})
+	</insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

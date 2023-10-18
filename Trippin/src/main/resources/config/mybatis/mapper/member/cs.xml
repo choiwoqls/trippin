@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cs">
+	
+	<!-- [[[[새미]]]] -->
+	<select id="allTitle" resultType="cs" parameterType="map">
+		select * from
+			(select rownum rn,t.* from
+				(select cc.cs_cate_name, cs.cs_subcate_name,c.*
+					from cs c, cs_cate cc,cs_subcate cs 
+					where cc.cs_cate_seq = c.cs_cate_seq 
+					and cs.cs_subcate_seq(+) = c.cs_subcate_seq
+					<if test="type != null">
+						and ${type} like '%${word}%'
+					</if>	
+					order by c.cs_seq)t)
+					<![CDATA[
+								where rn >= #{first} and rn <= #{last}
+							]]>
+	</select>
+	
+	<!-- 전체 리스트 개수(페이징 필요) -->
+	<select id="getTotal" resultType="int" parameterType="map">
+		select count(*) 
+		from cs c, cs_cate cc,cs_subcate cs
+		where
+		cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq(+) = c.cs_subcate_seq
+		<if test="word != null">
+			and c.content like '%${word}%'
+		</if>			
+	</select>
+	
+	
+	
+	
+	<!-- ////////////////여기서부터 삭제 예정/////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- 숙소전체 -->
+	<select id="allAccom" resultType="cs" parameterType="map">
+		select * from
+			(select rownum rn,t.* from
+				(
+					select cc.cs_cate_name, cs.cs_subcate_name,c.*
+					from cs c, cs_cate cc,cs_subcate cs 
+					where cc.cs_cate_seq = c.cs_cate_seq and
+					cs.cs_subcate_seq = c.cs_subcate_seq
+					<if test="word != null">
+						and c.content like '%${word}%'
+					</if>		
+					and cc.cs_cate_seq=1
+					order by cs.cs_subcate_seq)t)
+					<![CDATA[where rn >=#{first} and rn <=#{last}
+					]]>
+	</select>
+	
+	<!-- 숙소-예약 리스트 -->
+	<select id="A_rv" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=1 and cs.cs_subcate_seq=1
+		order by c.cs_seq
+	</select>
+	
+	<!-- 숙소-예약변경 리스트 -->
+	<select id="A_rvc" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=1 and cs.cs_subcate_seq=2
+		order by c.cs_seq
+	</select>
+	
+	<!-- 숙소-결제 리스트 -->
+	<select id="A_pay" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=1 and cs.cs_subcate_seq=3
+		order by c.cs_seq
+	</select>
+	
+	<!-- 숙소-요청사항 리스트 -->
+	<select id="A_req" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=1 and cs.cs_subcate_seq=4
+		order by c.cs_seq
+	</select>
+	
+	<!-- 숙소-이용 리스트 -->
+	<select id="A_acc" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=1 and cs.cs_subcate_seq=5
+		order by c.cs_seq
+	</select>
+	
+	<!-- 숙소-취소 환불 리스트 -->
+	<select id="A_cref" resultType="cs"  parameterType="map">
+	select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=1 and cs.cs_subcate_seq=6
+		order by c.cs_seq
+	</select>
+	
+	<!-- 투어/티켓 전체 -->
+	<select id="allTour" resultType="cs" parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=2
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 투어예약 -->
+	<select id="t_Res" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=2  and cs.cs_subcate_seq=7
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 투어 이용 -->
+	<select id="t_Acc" resultType="cs" parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=2  and cs.cs_subcate_seq=8
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 투어 취소 및 환불 -->
+	<select id="t_cref" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=2  and cs.cs_subcate_seq=9
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 서비스일반 전체 -->
+	<select id="allService" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=3
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 서비스일반- 계정관련 -->
+	<select id="s_account" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=3 and cs.cs_subcate_seq=10
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 서비스일반-일정  -->
+	<select id="s_sch" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=3 and cs.cs_subcate_seq=11
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 서비스일반-도시정보  -->
+	<select id="s_city" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=3 and cs.cs_subcate_seq=12
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 서비스일반-라운지  -->
+	<select id="s_lounge" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=3 and cs.cs_subcate_seq=13
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 서비스일반-셀프패키지  -->
+	<select id="s_self" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=3 and cs.cs_subcate_seq=14
+		order by cs.cs_subcate_seq
+	</select>
+	
+	<!-- 서비스일반-여행자클럽 및 혜택  -->
+	<select id="s_club" resultType="cs"  parameterType="map">
+	select cc.cs_cate_name, cs.cs_subcate_name,c.*
+	from cs c, cs_cate cc,cs_subcate cs 
+	where cc.cs_cate_seq = c.cs_cate_seq and
+	cs.cs_subcate_seq = c.cs_subcate_seq
+	and c.content like '%${word}%'	
+	and cc.cs_cate_seq=3 and cs.cs_subcate_seq=15
+	order by cs.cs_subcate_seq
+	
+	</select>
+	<!-- 서비스일반-트리핀 캐시  -->
+	<select id="s_cash" resultType="cs"  parameterType="map">
+	select cc.cs_cate_name, cs.cs_subcate_name,c.*
+	from cs c, cs_cate cc,cs_subcate cs 
+	where cc.cs_cate_seq = c.cs_cate_seq and
+	cs.cs_subcate_seq = c.cs_subcate_seq
+	and c.content like '%${word}%'	
+	and cc.cs_cate_seq=3 and cs.cs_subcate_seq=16
+	order by cs.cs_subcate_seq
+	
+	</select>
+	<!-- 서비스일반-광고 -->
+	<select id="s_ad" resultType="cs" parameterType="map">
+	select cc.cs_cate_name, cs.cs_subcate_name,c.*
+	from cs c, cs_cate cc,cs_subcate cs 
+	where cc.cs_cate_seq = c.cs_cate_seq and
+	cs.cs_subcate_seq = c.cs_subcate_seq
+	and c.content like '%${word}%'	
+	and cc.cs_cate_seq=3 and cs.cs_subcate_seq=17
+	order by cs.cs_subcate_seq
+	
+	</select>
+	
+	<!-- 서비스일반-기타 -->
+	<select id="s_etc" resultType="cs" parameterType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where cc.cs_cate_seq = c.cs_cate_seq and
+		cs.cs_subcate_seq = c.cs_subcate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=3 and cs.cs_subcate_seq=18
+		order by cs.cs_subcate_seq
+	</select>
+	
+	
+	<!-- 공통 전체 -->
+	<select id="allCommon" resultType="cs" parameterType="map">
+		select cc.cs_cate_name,c.*
+		from cs c, cs_cate cc 
+		where cc.cs_cate_seq = c.cs_cate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=4 
+		order by cs_seq
+	</select>
+	
+	<!-- 공지사항 전체 -->
+	<select id="allNoti" resultType="cs"  parameterType="map">
+		select cc.cs_cate_name,c.*
+		from cs c, cs_cate cc 
+		where cc.cs_cate_seq = c.cs_cate_seq
+		and c.content like '%${word}%'	
+		and cc.cs_cate_seq=5 
+		order by cs_seq
+	</select>
+	
+	<!-- /////////여기까지 삭제 예정///////////////////////////////////////////////////////////////////////////////////////////// -->
+	
+	
+	
+	
+	<!-- cs 삭제 -->
+	<delete id="csDel" parameterType="int">
+		delete from cs where cs_seq = #{cs_seq}
+	</delete>
+	
+	<!-- csSEQ -->
+	<select id="getCsSeq" resultType="int">
+		select cs_seq.nextval from dual
+	</select>	
+	
+	<!-- insert -->
+	<insert id="csInsert" parameterType="cs">
+		insert into cs values(#{cs_seq},#{cs_cate_seq},
+		<if test="cs_subcate_seq==0">
+			null
+		</if>
+		<if test="cs_subcate_seq!=0">
+			#{cs_subcate_seq}
+		</if>
+		,#{title},#{content},#{cs_img, jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="csUpdate" parameterType="cs">
+	  update cs
+	  set
+	    cs_cate_seq=#{cs_cate_seq},
+	    cs_subcate_seq=
+	    <if test="cs_subcate_seq == 0">
+	      null
+	    </if>
+	    <if test="cs_subcate_seq != 0">
+	      #{cs_subcate_seq}
+	    </if>,
+	    title=#{title},
+	    content=#{content},cs_img=#{cs_img, jdbcType=VARCHAR}
+		where cs_seq=#{cs_seq}
+	</update>
+	
+	<select id="getContent" parameterType="int" resultType="map">
+		select cc.cs_cate_name, cs.cs_subcate_name,c.*
+		from cs c, cs_cate cc,cs_subcate cs 
+		where c.cs_cate_seq = cc.cs_cate_seq and
+		c.cs_subcate_seq = cs.cs_subcate_seq(+) and cs_seq=#{cs_seq}
+	</select>
+		
+	<select id="filelistCs" parameterType="int" resultType="cs">
+		select cs_img
+		from cs c where cs_seq=#{cs_seq}
+	</select>
+	
+	<select id="cateAjaxCs" parameterType="map" resultType="cs">
+		select c.title, c.cs_seq from cs c, cs_cate cc where
+		c.cs_cate_seq = cc.cs_cate_seq 
+		<if test="what=='숙소'">
+			and cc.cs_cate_seq=1
+		</if>
+		<if test="what=='투어'">
+			and cc.cs_cate_seq=2
+		</if>
+		<if test="what=='서비스'">
+			and cc.cs_cate_seq=3
+		</if>
+		<if test="what=='공통'">
+			and cc.cs_cate_seq=4
+		</if>
+		<if test="what=='공지사항'">
+			and cc.cs_cate_seq=5
+		</if>
+			and
+			<![CDATA[
+			 rownum <=4
+			]]>
+	</select>
+	
+	<select id="csTitleAjax" parameterType="map" resultType="cs">
+		select c.*,cs.cs_subcate_name 
+		from cs c, cs_subcate cs
+		where c.cs_subcate_seq = cs.cs_subcate_seq 
+		and cs.cs_cate_seq=#{cs_cate_seq}
+		and c.cs_subcate_seq=#{cs_subcate_seq}
+	</select>
+	
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

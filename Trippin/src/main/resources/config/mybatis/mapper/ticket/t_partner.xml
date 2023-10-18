@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="t_ptn">
+	
+	
+	<!-- [[[[현지]]]] -->
+	<insert id="insert" parameterType="t_ptn">
+		insert into T_PARTNER values(t_partner_seq.nextval, #{t_partner_name}, #{t_partner_intro}, #{t_partner_info}, #{t_partner_img}, #{t_partner_tel})
+	</insert>
+	
+	<update id="update" parameterType="t_ptn">
+		update T_PARTNER set t_partner_intro = #{t_partner_intro}, t_partner_info = #{t_partner_info}, t_partner_img = #{t_partner_img}, t_partner_tel = #{t_partner_tel} where t_partner_seq = #{t_partner_seq}
+	</update>
+	
+	<delete id="deletePTN" parameterType="int">
+		delete T_PARTNER where t_partner_seq = #{t_partner_seq}
+	</delete>
+	
+	<select id="selectPTNlist" resultType="t_ptn">
+		select * from T_PARTNER
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

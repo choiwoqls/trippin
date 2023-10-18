@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inquiry">
+
+	<insert id="insertInquiry" parameterType="inquiry">
+	    insert into inquiry values(
+	    	#{inquiry_seq}, #{cs_cate_seq}, #{cs_subcate_seq}, #{m_seq}, #{email}, #{tel}, #{title}, #{content}, sysdate, 0,
+	   		#{inquiry_img, jdbcType=VARCHAR},null,null)
+	</insert>
+	
+	<select id="inquirySeqOne" resultType="int">
+		select inquiry_seq.nextval from dual
+	</select>
+	
+	<select id="inquiryList" resultType="inquiry" parameterType="map">
+		select * from
+			(select rownum rn,t.* from
+				(select i.*, m.m_nickname,c.cs_cate_name,cc.cs_subcate_name from inquiry i, cs_cate c, cs_subcate cc,member m
+					where i.m_seq = m.m_seq 
+					and i.cs_cate_seq = c.cs_cate_seq 
+					and i.cs_subcate_seq = cc.cs_subcate_seq
+					<if test="type != null">
+						and ${type} like '%${word}%'
+					</if>
+						order by i.inquiry_seq)t)
+					<![CDATA[
+								where rn >= #{first} and rn <= #{last}
+							]]>
+	</select>
+	
+	<select id="inquiryOne" resultType="inquiry" parameterType="int">
+		select i.*, m.m_nickname,c.cs_cate_name,cc.cs_subcate_name,ci.purchase_no
+		from inquiry i, cs_cate c, cs_subcate cc,member m,c_inquiry ci
+		where i.m_seq = m.m_seq 
+		and i.cs_cate_seq = c.cs_cate_seq 
+		and i.cs_subcate_seq = cc.cs_subcate_seq 
+		and i.inquiry_seq = ci.inquiry_seq(+)
+		and i.inquiry_seq=#{inquiry_seq}
+	</select>
+	
+	  
+	<select id="inquiryMyList" resultType="inquiry" parameterType="map">
+		select * from
+			(
+			select rownum rn,t.* from
+				(
+				select i.*, m.m_nickname,c.cs_cate_name,cc.cs_subcate_name from inquiry i, cs_cate c, cs_subcate cc,member m
+				where i.m_seq = m.m_seq 
+				and i.cs_cate_seq = c.cs_cate_seq 
+				and i.cs_subcate_seq = cc.cs_subcate_seq 
+				and m.m_seq = #{m_seq} 
+				<if test = "what=='accom'">
+					and c.cs_cate_seq=1
+				</if>
+				<if test ="what=='ticket'">
+					and c.cs_cate_seq=2
+				</if>
+				<if test ="what=='service'">
+					and c.cs_cate_seq=3
+				</if>
+				)t)
+				<if test="what=='moreButton' or what=='hiddenButton'">
+					<![CDATA[
+					where rn >= 1 and rn <= #{last}
+					]]>
+				</if>
+	</select>
+	
+	<select id="getInquiryTotal" resultType="int" parameterType="map">
+		select count(*) from inquiry i, cs_cate c, cs_subcate cc,member m  
+		where i.m_seq = m.m_seq and i.cs_cate_seq = c.cs_cate_seq and
+		i.cs_subcate_seq = cc.cs_subcate_seq
+		<if test="type != null">
+			and ${type} like '%${word}%'
+		</if>
+	</select>
+	
+	<update id="doAnswerUp" parameterType="inquiry">
+		update inquiry 
+		set answer=1,do_answer=#{do_answer},do_answer_date=sysdate where inquiry_seq=#{inquiry_seq}
+	</update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

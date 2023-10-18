@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="rcl">
+	
+	
+	<!-- [[[[현지]]]] -->
+	<insert id="insert" parameterType="rcl">
+		insert into REVIEW_CMT_LIKE values(rv_cmtlike_seq.nextval, #{rv_cmt_seq}, #{m_seq})
+	</insert>
+	
+	<delete id="deleteRCL" parameterType="rcl">
+		delete REVIEW_CMT_LIKE where rv_cmt_seq = #{rv_cmt_seq} and m_seq = #{m_seq}
+	</delete>
+	
+	<select id="countRCL" parameterType="int" resultType="int">
+		select nvl(count(*), 0) rcl_cnt from REVIEW_CMT_LIKE where rv_cmt_seq = #{rv_cmt_seq}
+	</select>
+	
+	<select id="RCL_Mlist" parameterType="int" resultType="Map">
+		select * from
+			(select rownum rn, n.* from
+				(select m.m_profile, m.m_nickname
+				from MEMBER m, REVIEW_CMT_LIKE rcl, REVIEW_CMT rc
+				where rcl.m_seq = m.m_seq
+				and rcl.rv_cmt_seq = rc.rv_cmt_seq
+				and rcl.rv_cmt_seq = #{rv_cmt_seq}
+				order by rcl.rv_cmtlike_seq) n)
+				<![CDATA[
+			        where rn >= 1 and rn <= 20
+				]]>
+	</select>
+	
+	<select id="checkRCL" parameterType="rcl" resultType="rcl">
+		select * from REVIEW_CMT_LIKE where m_seq = #{m_seq} and rv_cmt_seq = #{rv_cmt_seq}
+	</select>
+	
+	
+	
+	<!-- [[[[희지]]]] -->
+	<select id="rv_seq" parameterType="rcl" resultType="rc">
+		select rc.rv_seq, rc.m_seq from review_cmt rc, review_cmt_like rcl 
+		where rc.rv_cmt_seq = rcl.rv_cmt_seq
+		and rcl.rv_cmt_seq = #{rv_cmt_seq}
+		and rcl.m_seq = #{m_seq}
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="rc">
+	
+	<!-- [[[[현지]]]] -->
+	<insert id="insert" parameterType="rc">
+		insert into REVIEW_CMT values(#{rv_cmt_seq}, #{rv_seq}, #{m_seq}, #{content}, SYSDATE, #{cmt_no},
+			<if test="m_seq2 != 0">
+				#{m_seq2}
+			</if>
+			<if test="m_seq2 == 0">
+				null
+			</if>
+		, #{depth}, 0, 0)
+	</insert>
+	
+	<update id="updateRC" parameterType="rc">
+		update REVIEW_CMT set content = #{content} where rv_cmt_seq = #{rv_cmt_seq} and m_seq = #{m_seq}
+	</update>
+	
+	<delete id="deleteRC" parameterType="int">
+		update REVIEW_CMT set report_status = 2 where rv_cmt_seq = #{rv_cmt_seq}
+	</delete>
+	
+	<select id="nowRv_cmt_seq" resultType="int">
+		select nvl(max(rv_cmt_seq), 0) + 1 from REVIEW_CMT
+	</select>
+	
+	<select id="selectRClist" parameterType="int" resultType="Map">
+		select m.m_seq, m.m_profile, m.m_nickname, rc.rv_cmt_seq, rc.cmt_no, x.ymd, rc.content, rc.depth, rc.report_status, nvl(rcl_cnt, 0) rcl_cnt
+		from
+		(select count(*) rcl_cnt, rv_cmt_seq from REVIEW_CMT_LIKE group by rv_cmt_seq) rcl,
+		(select to_char(datetime, 'YYYY-MM-DD') ymd, rv_cmt_seq from REVIEW_CMT) x,
+		MEMBER m, REVIEW_CMT rc, REVIEW r
+		where r.rv_seq(+) = rc.rv_seq
+		and m.m_seq = rc.m_seq
+		and rc.rv_cmt_seq = rcl.rv_cmt_seq(+)
+		and x.rv_cmt_seq = rc.rv_cmt_seq
+		and r.rv_seq = #{rv_seq}
+		order by rc.rv_cmt_seq
+	</select>
+	
+<!-- 	<select id="selectRPlist" parameterType="int" resultType="Map">
+		select m.m_seq, m.m_profile, m.m_nickname, rc.rv_cmt_seq, rc.cmt_no, x.ymd, rc.content, rc.depth, nvl(rcl_cnt, 0) rcl_cnt
+		from
+		(select count(*) rcl_cnt, rv_cmt_seq from REVIEW_CMT_LIKE group by rv_cmt_seq) rcl,
+		(select to_char(datetime, 'YYYY-MM-DD') ymd, rv_cmt_seq from REVIEW_CMT) x,
+		MEMBER m, REVIEW_CMT rc, REVIEW r
+		where r.rv_seq(+) = rc.rv_seq
+		and m.m_seq = rc.m_seq
+		and rc.rv_cmt_seq = rcl.rv_cmt_seq(+)
+		and x.rv_cmt_seq = rc.rv_cmt_seq
+		and r.rv_seq = #{rv_seq}
+		and rc.depth = 1
+		order by rc.rv_cmt_seq
+	</select>
+	 -->
+	 
+	 
+	 
+	 
+	 
+	 <!-- [[[[새미]]]] -->
+	<!--신고 15점 도달 숨김 처리  -->
+	<update id="HiddenRVC" parameterType="review">
+		update REVIEW_CMT set report_status = 1 where rv_cmt_seq = #{rv_cmt_seq} 
+		and rv_cmt_score &gt; 15
+	</update>
+	
+	<!--리뷰 댓글 숨김 해제  -->
+	<update id="defaultRVC" parameterType="review">
+		update REVIEW_CMT set report_status = 0 where rv_cmt_seq = #{rv_cmt_seq} 
+	</update>
+	
+	<!-- 리뷰 댓글 삭제 처리  -->
+	<update id="deleteRVC" >
+		update review_cmt set report_status = 2
+	    where rv_cmt_seq in
+	    ( select board_no from report where kind=1 and to_date(plus30,'yyyy-mm-dd')+1 <![CDATA[<=]]> to_date(sysdate,'yyyy-mm-dd') and result=1 )
+	</update>
+	
+	<update id="scoreRVC" parameterType="map">
+	    update review_cmt set rv_cmt_score = rv_cmt_score + (select score from report_cate where report_cate_seq=#{report_cate_seq})
+        where rv_cmt_seq=#{rv_cmt_seq}
+	</update>
+	
+	<update id="scoreResetRVC" parameterType="int">
+		update review_cmt set rv_cmt_score = 0
+		where rv_cmt_seq=#{rv_cmt_seq}
+	</update>
+	
+	<select id="rvcOne" resultType="map" parameterType="map">
+		select*from
+		(
+		select rownum rn,t.* from
+		(		
+	    select rcm.*,m.m_nickname from review_cmt rcm,member m 
+        where
+        m.m_seq = rcm.m_seq
+        and  rcm.m_seq=#{m_seq}
+        order by rcm.rv_seq desc)t)
+        <![CDATA[where rn >= #{first} and rn<=#{last}]]>
+	</select>
+	
+	<select id="rvcOneTotal" resultType="int" parameterType="map">	
+	    select count(*) from review_cmt rcm,member m 
+        where
+        m.m_seq = rcm.m_seq
+        and rcm.m_seq=#{m_seq}
+	</select>
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

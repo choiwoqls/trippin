@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="place_slog">
+
+	<insert id="newPlaceSlog" parameterType="place_slog">
+		insert into place_slog values(place_slog_seq.nextval, #{slog_seq}, #{day_slog_seq}, #{stars}, #{content}, #{img}, #{day_no}, #{num}, #{place}, #{board_no}, #{memo})
+	</insert>
+	
+	<select id="placeSlogList" parameterType="int" resultType="Map">
+		select p.*, f.name, a.addr2_name, c.cate_name, c.cate_seq, f.wi, f.kyung from place_slog p, form f, addr2 a, cate c
+		where p.board_no = f.f_seq(+)
+        and c.cate_seq = f.cate_seq
+        and f.addr2_seq = a.addr2_seq
+		and day_slog_seq = #{day_slog_seq}
+		order by place_slog_seq
+	</select>
+	
+	<update id="rePlaceSlog" parameterType="place_slog">
+		update place_slog set stars = #{stars}, content = #{content}, img = #{img}  where place_slog_seq = #{place_slog_seq}
+	</update>
+	
+	<select id="selectS_seq" parameterType="int" resultType="int"> 
+		select s.s_seq from slog s, place_slog p 
+        where s.slog_seq = p.slog_seq
+         and p.place_slog_seq = #{place_seq}
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

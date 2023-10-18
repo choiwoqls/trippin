@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ccp_word">
+	
+	<select id="ccp_word_use" parameterType="int" resultType="ccp_word">
+		select * from ccp_word where ticket_seq = #{ticket_seq} and ccp_seq = 1 order by ccp_word_seq
+	</select>
+	
+	<select id="ccp_word_end" parameterType="int" resultType="ccp_word">
+		select * from ccp_word where ticket_seq = #{ticket_seq} and ccp_seq = 2 order by ccp_word_seq
+	</select>
+	
+	<select id="ccp_word" parameterType="int" resultType="ccp_word">
+		select * from ccp_word where ticket_seq= #{ticket_seq} and ccp_seq in (1,2)
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

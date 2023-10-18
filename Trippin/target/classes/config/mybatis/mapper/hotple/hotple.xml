@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hotple">
+	
+	<insert id="insert" parameterType="hotple">
+		insert into hotple values(#{h_seq}, #{f_seq}, #{h_busi}, #{h_info}, #{h_lastorder,jdbcType=VARCHAR}, #{h_runtime,jdbcType=VARCHAR}, #{h_img, jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="hotple" parameterType="int" resultType="hotple">
+		select * from hotple where f_seq = #{f_seq}
+	</select>
+
+	<select id="sameHotple" parameterType="String" resultType="int">
+		select count(*) from hotple where h_busi=#{h_busi}
+	</select>
+	
+	<select id="newSeq" resultType="int">
+		select nvl(max(h_seq),0)+1 from hotple
+	</select>
+	
+	<update id="update" parameterType="hotple">
+		update hotple set
+		h_info=#{h_info, jdbcType=VARCHAR}, 
+		h_lastorder=#{h_lastorder, jdbcType=VARCHAR}, 
+		h_runtime=#{h_runtime, jdbcType=VARCHAR}
+		where f_seq = #{f_seq}
+	</update>
+	
+	<select id="runInfo" parameterType="int" resultType="String">
+		select h_runtime from hotple where f_seq = #{f_seq}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

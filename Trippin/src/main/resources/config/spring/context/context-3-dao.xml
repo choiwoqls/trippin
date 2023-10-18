@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- common -->
+	<bean id="memberDao" class="dao.member.MemberDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="addr1Dao" class="dao.common.Addr1DAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="addr2Dao" class="dao.common.Addr2DAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="cateDao" class="dao.common.CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="dayDao" class="dao.common.DayDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="formDao" class="dao.common.FormDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+
+	<!-- [[[[재빈]]]] -->
+	<bean id="scheDao" class="dao.sche.ScheDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="styleDao" class="dao.sche.StyleDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="nuguDao" class="dao.sche.NuguDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="cityDao" class="dao.sche.CityDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="inviteDao" class="dao.sche.InviteDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="planDao" class="dao.sche.PlanDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="costDao" class="dao.sche.CostDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="cost_detailsDao" class="dao.sche.Cost_DetailsDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="moneylistDao" class="dao.sche.MoneyListDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="calculateDao" class="dao.sche.CalculateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="myplaceDao" class="dao.slog.MyPlaceDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="day_slogDao" class="dao.slog.Day_SlogDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="place_slogDao" class="dao.slog.Place_SlogDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="slog_addDao" class="dao.slog.Slog_AddDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<!-- [[[[거의 공통]]]] -->
+	<bean id="slogDao" class="dao.slog.SlogDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="slog_cmtDao" class="dao.slog.Slog_CmtDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+
+	<!-- [[[[현지]]]] -->
+	<bean id="slog_cmt_likeDao" class="dao.slog.Slog_Cmt_LikeDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="slog_likeDao" class="dao.slog.Slog_LikeDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="jjimDao" class="dao.common.JjimDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="tourDao" class="dao.tour.TourDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="tour_cateDao" class="dao.tour.Tour_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="newplaceDao" class="dao.member.NewplaceDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="reviewDao" class="dao.common.ReviewDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="review_likeDao" class="dao.common.Review_LikeDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="review_cmtDao" class="dao.common.Review_CmtDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="review_cmt_likeDao"
+		class="dao.common.Review_Cmt_LikeDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="t_partnerDao" class="dao.ticket.T_PartnerDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="ticket_cateDao" class="dao.ticket.Ticket_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="include_itemsDao" class="dao.ticket.Include_ItemsDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="tkjjimDao" class="dao.ticket.TkjjimDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+
+
+	<!-- [[[[새미]]]] -->
+	<!--member -->
+	<bean id="cs_cateDao" class="dao.member.CS_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	<bean id="cs_subcateDao" class="dao.member.CS_SubCateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	<bean id="csDao" class="dao.member.CSDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="inquiryDao" class="dao.member.InquiryDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	<bean id="c_inquiryDao" class="dao.member.C_InquiryDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<!-- sche -->
+	<bean id="clist_cateDao" class="dao.sche.Clist_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="clist_itemsDao" class="dao.sche.Clist_ItemsDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="clist_memoDao" class="dao.sche.Clist_MemoDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="myclistDao" class="dao.sche.MyclistDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<!--accom -->
+	<bean id="paymentDao" class="dao.accom.PaymentDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="s_reportDao" class="dao.member.S_ReportDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+
+	<!-- [[[[희지, 새미]]]] -->
+	<bean id="report_cateDao" class="dao.member.Report_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="m_report_cateDao" class="dao.member.M_Report_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="reportDao" class="dao.member.ReportDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="m_reportDao" class="dao.member.M_ReportDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="t_purchaseDao" class="dao.ticket.T_PurchaseDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="t_reserverDao" class="dao.ticket.T_ReserverDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="revisionDao" class="dao.member.RevisionDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+
+	<!-- [[[[현지, 희지]]]] -->
+	<bean id="hoursDao" class="dao.common.HoursDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="ticketDao" class="dao.ticket.TicketDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="hours_cateDao" class="dao.common.Hours_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="tip_keywordDao" class="dao.common.Tip_KeywordDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="tipsDao" class="dao.common.TipsDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	
+	<bean id="f_tipsDao" class="dao.common.F_TipsDAO">
+		<constructor-arg ref="sqlSession"/>
+	</bean>
+
+
+	<!-- [[[[희지]]]] -->
+	<bean id="ccp_wordDao" class="dao.ticket.Ccp_WordDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="optDao" class="dao.ticket.OptDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="suboptDao" class="dao.ticket.SuboptDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="branchDao" class="dao.hotple.BranchDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="h_cateDao" class="dao.hotple.H_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="hotpleDao" class="dao.hotple.HotpleDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="menuDao" class="dao.hotple.MenuDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="couponDao" class="dao.admin.CouponDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="l_couponDao" class="dao.admin.L_CouponDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="couponlistDao" class="dao.member.CouponlistDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="t_amountDao" class="dao.ticket.T_AmountDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="cashDao" class="dao.member.CashDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="mycashDao" class="dao.member.MycashDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="cancel_cateDao" class="dao.common.Cancel_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="cancelDao" class="dao.common.CancelDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="payDao" class="dao.common.PayDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="refundDao" class="dao.common.RefundDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="noticelistDao" class="dao.member.NoticelistDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="level_pointDao" class="dao.member.Level_PointDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="pointDao" class="dao.member.PointDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="mypointDao" class="dao.member.MypointDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+
+	<!-- [[[[기범]]]] -->
+	<bean id="a_cateDao" class="dao.accom.A_CateDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="roomDao" class="dao.accom.RoomDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="accomDao" class="dao.accom.AccomDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="pensionDao" class="dao.accom.PensionDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+	<bean id="motelDao" class="dao.accom.MotelDAO">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+
+</beans>

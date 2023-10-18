@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="slog">
+	
+	
+	<!-- [[[[현지]]]] -->
+	<select id="m_SlogList" parameterType="int" resultType="Map">
+		select s.*, d.ymd, nvl(sl_cnt, 0) sl_cnt, nvl(sc_cnt, 0) sc_cnt, nvl(sa_cnt, 0) sa_cnt
+			from (select count(*) sl_cnt, slog_seq from SLOG_LIKE group by slog_seq) sl,
+				(select count(*) sc_cnt, slog_seq from SLOG_CMT group by slog_seq) sc,
+				(select count(*) sa_cnt, slog_seq from SLOG_ADD group by slog_seq) sa,
+				(select to_char(datetime, 'YYYY-MM-DD') ymd, slog_seq from SLOG) d,
+				SLOG s, MEMBER m
+			where s.slog_seq = sl.slog_seq(+)
+				and s.slog_seq = sc.slog_seq(+)
+				and s.slog_seq = sa.slog_seq(+)
+				and s.slog_seq = d.slog_seq
+				and s.m_seq = m.m_seq
+				and m.m_seq = #{m_seq}
+			order by s.datetime desc
+	</select>
+	
+	<select id="slog_rpCnt" parameterType="int" resultType="int">
+		select nvl(sum(count(*)), 0) from SLOG where status in (1, 2) and m_seq = #{m_seq} group by status
+	</select>
+	
+	
+	
+	<!-- [[[[새미]]]] -->
+	<!--여행기 숨김  -->
+	<update id="HiddenSL" parameterType="slog">
+		update slog set status =1
+		where slog_seq = #{slog_seq}
+		<![CDATA[and score >15]]>
+	
+		
+	</update>
+	<!--여행기 숨김해제  -->
+	<update id="DefaultSL" parameterType="slog">
+		update slog set status =0
+		where slog_seq = #{slog_seq}
+	</update>
+	
+	<!--여행기 삭제  -->
+	<update id="deleteSL" parameterType="int">
+		update slog set status=2
+		where slog_seq = #{slog_seq}
+	</update>
+	
+	<select id="slseqDelete" resultType="map">
+		select slog_seq,m_seq from slog where slog_seq in 
+		(select sr.board_no from s_report sr, slog sl 
+		where sr.kind=0
+		and to_date(plus30, 'yyyy-mm-dd')+1<![CDATA[<=]]> to_date(sysdate, 'yyyy-mm-dd')
+		and result=1 and sr.board_no = sl.slog_seq
+		and sl.status !=2)
+	</select>
+	
+	<!--여행기 신고 점수 누적 -->
+	<update id="scoreSL" parameterType="map">
+		update slog set score = score + (select score from report_cate where
+		report_cate_seq=#{report_cate_seq})
+		where slog_seq=#{slog_seq}
+	</update>
+	
+	<!-- 여행기 신고 점수 리셋 -->
+	<update id="scoreReset" parameterType="int">
+		update slog set score = 0
+		where slog_seq=#{slog_seq}
+	</update>
+	
+	
+	
+	<!-- [[[[희지]]]] -->
+	<select id="slogSome" parameterType="int" resultType="slog">
+	   select m_seq, title,status from slog where slog_seq = #{slog_seq}
+	</select>
+	
+	<select id="slogCount" parameterType="int" resultType="map">
+	   select m_seq, title, 
+	   (select count(*) from slog_add where slog_seq=#{slog_seq}) s_add,
+	   (select count(*) from slog_like where slog_seq=#{slog_seq}) s_like
+	   from slog where slog_seq=#{slog_seq}
+	</select>
+	
+	
+	
+	<!-- [[[[재빈]]]] -->
+	<select id="checkSlog" parameterType="slog" resultType="slog">
+		select slog_seq, status, s.s_seq from schedule s, slog g 
+		where s.s_seq = g.s_seq
+		and s.s_seq = #{s_seq}
+		and g.m_seq = #{m_seq}
+	</select>
+	
+	<insert id="newSlog" parameterType="slog">
+		insert into slog values(#{slog_seq}, #{addrlist}, #{nugu_seq}, #{style_seq}, #{m_seq}, #{title}, #{intro}, #{img}, sysdate, #{night}, #{month}, #{loca_cnt}, #{status}, #{score}, #{s_seq})
+	</insert>
+	
+	<select id="slogSeq" resultType="int">
+		select slog_seq.nextval from dual
+	</select>
+	
+	<delete id="delSlog" parameterType="int">
+		delete slog where slog_seq = #{slog_seq}
+	</delete>
+	
+	<select id="slogInfo" parameterType="int" resultType="Map">
+		select *from slog where slog_seq = #{slog_seq}
+	</select>
+	
+	<update id="reSlogTitle" parameterType="slog">
+		update slog set title = #{title} where slog_seq = #{slog_seq}
+	</update>
+	
+	<update id="reSlogIntro" parameterType="slog">
+		update slog set intro = #{intro} where slog_seq = #{slog_seq}
+	</update>
+	
+	<update id="reSlogImg" parameterType="slog">
+		update slog set img = #{img} where slog_seq = #{slog_seq}
+	</update>
+	
+	<update id="changeStatus" parameterType="slog">
+		update slog set status = #{status} where slog_seq = #{slog_seq}
+	</update>
+	
+	
+	<!-- 2023/09/15 -->
+	<select id="slogInfoPlus" parameterType="int" resultType="Map">
+		select m.m_nickname, m.m_level, m.m_profile, nvl(addSu, 0)as addSu, nvl(cmtSu, 0)as cmtSu, nvl(likeSu, 0)as likeSu, nvl(reviewSu, 0)as reviewSu, to_char(s.datetime, 'yyyy.mm.dd')as dtime , s.* from slog s, member m,
+		(select slog_seq, count(slog_seq)as addSu from slog_add group by slog_seq)a,
+		(select slog_seq, count(slog_seq)as cmtSu from slog_cmt group by slog_seq)b,
+		(select slog_seq, count(slog_seq)as likeSu from slog_like group by slog_seq)c,
+		(select m_seq, count(m_seq)as reviewSu from review group by m_seq)d
+		where s.slog_seq = a.slog_seq(+)
+		and s.slog_seq = b.slog_seq(+)
+		and s.slog_seq = c.slog_seq(+)
+		and s.m_seq = m.m_seq
+		and s.m_seq = d.m_seq(+)
+		and s.slog_seq = #{slog_seq}
+	</select>
+	
+	<select id="slogCmtList" parameterType="int" resultType="Map">
+		select to_char(c.datetime,'yyyy.mm.dd')as dt, c.*, nvl(a.cmtLikeSu, 0)as cmtLikeSu, m.m_nickname, b.m_nickname as recN from slog_cmt c, (select slog_cmt_seq, count(slog_cmt_seq)as cmtLikeSu from slog_cmt_like group by slog_cmt_seq)a,
+		member m, (select m_nickname, m_seq from member) b
+		where c.slog_cmt_seq = a.slog_cmt_seq(+)
+        and m.m_seq = c.m_seq
+        and c.m_seq2 = b.m_seq(+)
+		and c.slog_seq = #{slog_seq}
+		order by c.datetime
+	</select>
+	
+	<select id="slogList" resultType="Map">
+		select *from slog s, member m 
+		where
+		s.m_seq =  m.m_seq
+		and s.status = 0
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

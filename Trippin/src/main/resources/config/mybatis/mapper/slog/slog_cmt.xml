@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="slog_cmt">
+
+
+	<!-- [[[[새미]]]] -->
+	<!--여행기 댓글 숨김  -->
+	<update id="HiddenSLC" parameterType="slog">
+		update slog_cmt set status =1
+		where slog_cmt_seq = #{slog_cmt_seq}
+		<![CDATA[and score >15]]>
+	</update>
+	
+	<!--여행기 댓글 숨김해제  -->
+	<update id="DefaultSLC" parameterType="slog">
+		update slog_cmt set status =0
+		where slog_cmt_seq = #{slog_cmt_seq}
+	</update>
+	
+	<!--여행기 댓글 삭제  -->
+	<update id="deleteSLC" >
+		update slog_cmt set status=2
+		where slog_cmt_seq in 
+		(select board_no from s_report where to_date(plus30, 'yyyy-mm-dd')+1<![CDATA[<=]]> to_date(sysdate, 'yyyy-mm-dd')
+		and result=1)
+	</update>
+	
+	<!--여행기 댓글 신고 점수 누적 -->
+	<update id="scoreSLC" parameterType="map">
+		update slog_cmt set score = score + (select score from report_cate where
+		report_cate_seq=#{report_cate_seq})
+		where slog_cmt_seq=#{slog_cmt_seq}
+	</update>
+	
+	<!-- 여행기 댓글 신고 점수 리셋 -->
+	<update id="scoreResetSLC" parameterType="int">
+		update slog_cmt set score = 0
+		where slog_cmt_seq=#{slog_cmt_seq}
+	</update>
+
+	<!-- [[[[희지]]]] -->
+	<select id="scmtSome" parameterType="int" resultType="slog_cmt">
+		select slog_seq, m_seq, m_seq2, depth
+		from slog_cmt
+		where slog_cmt_seq = #{slog_cmt_seq}
+	</select>
+
+	<!-- [[[[재빈]]]] -->
+	<insert id="newSlogCmt" parameterType="slog_cmt">
+		insert into slog_cmt values(slog_cmt_seq.nextval, #{slog_seq}, #{m_seq}, #{content}, sysdate , #{cmt_no},
+		<if test="m_seq2 != 0">
+			#{m_seq2}
+		</if>
+		<if test="m_seq2 == 0">
+			null
+		</if>
+		, #{depth}, #{status}, #{score} )
+	</insert>
+	
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

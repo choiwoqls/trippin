@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="slog_like">
+	
+	<!-- [[[[현지]]]] -->
+	<insert id="insert" parameterType="slog_like">
+		insert into SLOG_LIKE values(slog_like_seq.nextval, #{slog_seq}, #{m_seq})
+	</insert>
+	
+	<delete id="deleteSLike" parameterType="slog_like">
+		delete SLOG_LIKE where slog_seq = #{slog_seq} and m_seq = #{m_seq}
+	</delete>
+	
+	<select id="countSLike" parameterType="int" resultType="int">
+		select nvl(count(*), 0) slike_cnt from SLOG_LIKE where slog_seq = #{slog_seq}
+	</select>
+	
+	<select id="SLike_Mlist" parameterType="int" resultType="Map">
+		select * from 
+			(select rownum rn, n.* from
+				(select m.m_profile, m.m_nickname
+				from MEMBER m, SLOG_LIKE sl, SLOG s
+				where sl.m_seq = m.m_seq
+				and sl.slog_seq = s.slog_seq
+				and sl.slog_seq = #{slog_seq}
+				order by sl.slog_like_seq)n)
+				<![CDATA[
+			        where rn >= 1 and rn <= 20
+				]]>
+	</select>
+	
+	<select id="checkSLike" parameterType="slog_like" resultType="slog_like">
+		select * from SLOG_LIKE where m_seq = #{m_seq} and slog_seq = #{slog_seq}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

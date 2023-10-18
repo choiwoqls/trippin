@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="noticelist">
+	
+	<select id="preNotice" parameterType="map" resultType="int">
+		select count(*) cnt from noticelist 
+		where m_seq = #{m_seq}
+		and notice_seq = #{notice_seq}
+		and substr(${where}, ${order}, instr(${where}, ',') -1 ) = #{some}
+	</select>
+	
+	<insert id="insert" parameterType="noticelist">
+		insert into noticelist values(noticelist_seq.nextval, #{m_seq}, #{notice_seq}, 
+		#{content, jdbcType=VARCHAR}, #{url_in, jdbcType=VARCHAR}, 0, sysdate)
+	</insert>
+	
+	<select id="myNotice" parameterType="int" resultType="map">
+		select nc.noticelist_seq,
+	        case c.notice_cate_name
+	            when 'comment' then 0
+	            when 'like'	then 1
+	            else 2
+	        end as cate
+	        , n.notice_content, nc.content, n.url, nc.url_in, nc.notice_check,
+			ceil(sysdate - nc.datetime -1) day, trunc(months_between(sysdate, nc.datetime)) monthdiff
+        from notice n, noticelist nc, notice_cate c
+        where n.notice_seq = nc.notice_seq
+	        and nc.m_seq = #{m_seq}
+	        and c.notice_cate_seq = n.notice_cate_seq
+	        order by nc.datetime desc
+	</select>
+	
+	<update id="readThis" parameterType="int">
+		update noticelist set  notice_check = 1 where noticelist_seq = #{noticelist_seq}
+	</update>
+
+	<select id="sameNotice" parameterType="noticelist" resultType="int">
+		select count(*) from noticelist
+		where notice_seq=#{notice_seq}
+		and m_seq = #{m_seq} 
+		and url_in = #{url_in}
+	</select>
+</mapper>
+
+

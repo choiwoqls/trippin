@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="t_amount">
+	
+	
+	<insert id="insert" parameterType="t_amount">
+		insert into t_amount values(t_amount_seq.nextval, #{subopt_seq}, #{sum_price}, #{amount})
+	</insert>
+	
+	<select id="maxSeq" resultType="int">
+		select max(t_amount_seq) from t_amount
+	</select>	
+	
+	<select id="pickList" resultType="t_amount" parameterType="int">
+		select t_amount_seq, subopt_name, sum_price, amount, opt_name
+		from subopt s, t_amount t, opt o
+		where t_amount_seq=#{t_amout_seq} and s.subopt_seq = t.subopt_seq
+		and s.opt_seq = o.opt_seq
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

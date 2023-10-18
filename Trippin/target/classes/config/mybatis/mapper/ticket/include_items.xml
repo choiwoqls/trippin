@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="incl_itms">
+	
+	<insert id="insert" parameterType="incl_itms">
+		insert into INCLUDE_ITEMS values(include_items_seq.nextval, #{include_item})
+	</insert>
+	
+	<update id="update" parameterType="incl_itms">
+		update INCLUDE_ITEMS set include_item = #{include_item} where include_items_seq = #{include_items_seq}
+	</update>
+	
+	<delete id="deleteInclItms" parameterType="int">
+		delete INCLUDE_ITEMS where include_items_seq = #{include_items_seq}
+	</delete>
+	
+	<select id="selectInclItmsList" resultType="incl_itms">
+		select * from INCLUDE_ITEMS
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

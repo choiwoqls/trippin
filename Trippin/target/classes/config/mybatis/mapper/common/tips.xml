@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tips">
+	
+	<select id="findTip" resultType="tips" parameterType="map">
+		select * from tips where tip like '%${tip}%'
+	</select>
+	
+	<insert id="addTip" parameterType="String">
+		insert into tips values(tips_seq.nextval, #{tip})
+	</insert>
+	
+	<select id="maxSeq" resultType="int">
+		select max(tips_seq) from tips
+	</select>
+
+	<select id="sameTip" parameterType="String" resultType="int">
+		select count(*) cnt from tips where tip=#{tip}
+	</select>
+</mapper>

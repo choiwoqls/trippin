@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="payment">
+	
+	<!-- 새미 -->
+	<select id="accomPayList" resultType="payment" parameterType="int" >
+		select p.*,f.name from payment p,room r, form f  where 
+		p.room_seq = r.room_seq and
+		r.f_seq = f.f_seq and
+		m_seq=#{m_seq}
+	
+	</select>
+
+	
+	<select id="accomPaymentOne" resultType="map" parameterType="int">
+		select p.*,f.name ,ci.kind
+		from payment p,room r, form f,c_inquiry ci
+		where p.room_seq = r.room_seq
+		and r.f_seq = f.f_seq
+		and ci.purchase_no = p.payment_seq
+		and ci.kind=0
+		and p.payment_seq = #{purchase_no}
+	</select>
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

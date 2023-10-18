@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tkjjim">
+	
+	
+	<insert id="insert" parameterType="tkjjim">
+		insert into TKJJIM (tkjjim_seq, m_seq, ticket_seq) values(tkjjim_seq.nextval, #{m_seq}, #{ticket_seq})
+	</insert>
+	
+	<update id="update" parameterType="tkjjim">
+		update TKJJIM set memo = #{memo} where tkjjim_seq = #{tkjjim_seq}
+	</update>
+	
+	<delete id="deleteTKJJIM" parameterType="tkjjim">
+		delete TKJJIM where ticket_seq = #{ticket_seq} and m_seq = #{m_seq}
+	</delete>
+	
+	<select id="countTKjjim" parameterType="int" resultType="int">
+		select count(*) from TKJJIM where ticket_seq = #{ticket_seq}	
+	</select>
+	
+	<select id="myTKjjimlist" parameterType="int" resultType="tkjjim">
+		select * from TKJJIM where m_seq = #{m_seq}
+	</select>
+	
+	<select id="checkTKJJIM" parameterType="tkjjim" resultType="tkjjim">
+		select * from TKJJIM where m_seq = #{m_seq} and ticket_seq = #{ticket_seq}
+	</select>
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

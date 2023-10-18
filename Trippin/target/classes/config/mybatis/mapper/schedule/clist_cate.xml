@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clist_cate">
+
+
+	<select id="ccListRequired" resultType="clist_cate">
+		select * from clist_cate
+		where status=1
+	</select>
+
+	<select id="ccListAdd" resultType="clist_cate">
+		select * from clist_cate where
+		status=2
+	</select>
+
+	<insert id="addCate" parameterType="clist_cate">
+		insert into clist_cate
+		values(clist_cate_seq.nextval,#{clist_cate_name},#{m_seq},2)
+	</insert>
+
+
+	<!-- [[[[재빈]]]] -->
+	<!-- 전체 조회 -->
+	<select id="cateList" resultType="clist_cate" parameterType="int">
+		select *
+		from clist_cate c ,
+		(select max(c.clist_cate_seq)as clist_cate_seq, min(c.clist_cate_seq)as cno,
+		count(c.clist_cate_name)as su from clist_cate c
+		where (m_seq is null or m_seq = #{m_seq})
+		group by clist_cate_name) s
+		where
+		s.clist_cate_seq = c.clist_cate_seq
+		order by s.cno asc
+	</select>
+
+	<select id="ccListDefault" resultType="clist_cate" parameterType="int">
+		select *from clist_cate where (m_seq is null or m_seq = #{m_seq}) and status =3
+	</select>
+
+	<select id="cateListNotadd" resultType="clist_cate">
+		select *from clist_cate
+		where stauts !=2
+	</select>
+	
+	
+	<!-- [[[[희지]]]] -->
+	<select id="cateItem" parameterType="Map" resultType="Map">
+		select i.*, mc.m_seq as mseq,mc.s_seq as sseq
+		from clist_cate c, member m, clist_items i, myclist mc
+		where c.clist_cate_seq = #{clist_cate_seq}
+		and c.clist_cate_seq = i.clist_cate_seq
+		and i.clist_items_seq = mc.clist_items_seq(+)
+		and m.m_seq = #{m_seq}
+		and (c.m_seq is null or c.m_seq = m.m_seq)
+		and (i.m_seq is null or i.m_seq = m.m_seq)
+		and m.m_seq = mc.m_seq(+)
+	</select>
+	
+	<!-- 카테고리 이름 -->
+	<select id="cateName" parameterType="map" resultType="String">
+		select clist_cate_name
+		from clist_cate
+		where clist_cate_seq=#{clist_cate_seq} and (m_seq is null or m_seq = #{m_seq})
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+

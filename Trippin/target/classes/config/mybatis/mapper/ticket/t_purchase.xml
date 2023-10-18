@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="t_purchase">
+	
+	<!-- [[[[희지]]]] -->
+	<insert id="insert" parameterType="t_purchase">
+		insert into t_purchase values(t_purchase_seq.nextval, #{m_seq}, #{ticket_seq},
+		
+		<if test="coupon_kind == 2">
+			null,
+		</if>
+		<if test="coupon_kind != 2">
+			#{coupon_kind},		
+		</if>
+		
+		<if test="coupon_no == 0">
+			null,
+		</if>
+		<if test="coupon_no != 0">
+			#{coupon_no},
+		</if>
+		
+		#{use_date}, #{end_date}, #{t_amount_no}, #{tot_money}, #{pay_money}, #{use_cash},
+		#{reserver_name}, #{reserver_tel}, #{reserver_email}, #{repre_name}, #{repre_tel},
+		#{pay_seq}, #{serial_no}, sysdate, 0)
+	</insert>
+	
+	<update id="cashSeqInsert" parameterType="t_purchase">
+		update t_purchase set mycash_seq=#{mycash_seq} where t_purchase_seq = #{t_purchase_seq}	
+	</update>
+	
+	<select id="maxSeq" resultType="int">
+		select nvl(max(t_purchase_seq),0) from t_purchase
+	</select>
+	
+	<select id="myTicket" resultType="map" parameterType="int">
+		select t.ticket_seq, t.ticket_name, a1.addr1_name, t.cancel_status, tp.serial_no, 
+		to_char(tp.use_date, 'yyyy-MM-dd') use_date, to_char(tp.end_date, 'yyyy-MM-dd') end_date, 
+		tp.reserver_name, tp.reserver_tel, tp.reserver_email, tp.repre_name, tp.repre_tel,
+        tp.tot_money, tp.pay_money, tp.use_cash, tp.coupon_no, mc.cash, tp.status,
+        to_char(mc.cash_date, 'yyyy.MM.dd') cash_date, to_char(tp.datetime, 'yyyy-MM-dd HH24:MI:SS') datetime, 
+        tp.t_amount_no, tp.status, pt.t_partner_name, pt.t_partner_intro, pt.t_partner_img
+		
+        from ticket t, t_purchase tp, addr1 a1, addr2 a2, t_partner pt, mycash mc
+		where tp.t_purchase_seq = #{t_purchase_seq}
+        and mc.kind = 1 and mc.purchase_no = tp.t_purchase_seq
+		and tp.ticket_seq = t.ticket_seq
+		and a2.addr1_seq = a1.addr1_seq
+		and t.addr2_seq = a2.addr2_seq
+        and t.t_partner_seq = pt.t_partner_seq
+	</select>
+	
+	<select id="ticket_seq" parameterType="int" resultType="t_purchase">
+		select ticket_seq, use_date, end_date from t_purchase where t_purchase_seq=#{t_purchase_seq}
+	</select>
+	
+	<update id="returnCancle" parameterType="int">
+		update t_purchase set status = 3 where t_purchase_seq=#{t_purchase_seq}
+	</update>
+	
+	<select id="endPurchaseSeq" resultType="int">
+		select t_purchaseSeq from t_purchase where status = 0  and <![CDATA[end_date+1 < sysdate]]>
+	</select> 
+	
+	<update id="endPurchase">
+		update t_purchase set status = 2 where status = 0 and <![CDATA[end_date+1 < sysdate]]>
+	</update>
+	
+	<select id="ticketList" parameterType="map" resultType="map">
+		select * from
+			(select rownum rn, n.* from
+				(select tp.t_purchase_seq, m.m_name, tp.serial_no, t.ticket_name, 
+				to_char(tp.use_date, 'yyyy/MM/dd') use_date, to_char(tp.end_date, 'yyyy/MM/dd') end_date, 
+				to_char(tp.datetime,'yyyy.MM.dd HH24:MI:SS') datetime, tp.status
+				from t_purchase tp, member m, ticket t
+				where m.m_seq = tp.m_seq
+				and tp.ticket_seq = t.ticket_seq
+				<if test="type != null">
+					<if test="type != 'status'">
+						and ${type} like '%${word}%'
+					</if>
+					<if test="type == 'status' ">
+						and ${type} = #{word}
+					</if>
+				</if>
+				order by t_purchase_seq desc)n)
+		<![CDATA[
+			where rn >= #{first} and rn <= #{last}
+		]]>
+	</select>
+	
+	<select id="ticketCount" parameterType="map" resultType="int">
+			select count(*) from
+				(select tp.t_purchase_seq, m.m_name, tp.serial_no, t.ticket_name, 
+				to_char(tp.use_date, 'yyyy/MM/dd') use_date, to_char(tp.end_date, 'yyyy/MM/dd') end_date, 
+				to_char(tp.datetime,'yyyy.MM.dd HH24:MI:SS') datetime, tp.status
+				from t_purchase tp, member m, ticket t
+				where m.m_seq = tp.m_seq
+				<if test="type != null">
+					<if test="type != 'status'">
+						and ${type} like '%${word}%'
+					</if>
+					<if test="type == 'status' ">
+						and ${type} = #{word}
+					</if>
+				</if>
+				and tp.ticket_seq = t.ticket_seq)
+	</select>
+	
+	<select id="ticketOne" parameterType="int" resultType="map">
+		select tp.serial_no, m.m_name, t.ticket_name, m.m_seq,
+		to_char(tp.datetime, 'yyyy.MM.dd HH24:MI:SS') datetime, 
+		to_char(tp.use_date, 'yyyy/MM/dd') use_date, to_char(tp.end_date, 'yyyy/MM/dd') end_date,
+		tp.tot_money, tp.pay_money, tp.t_amount_no, tp.reserver_name, tp.reserver_tel, tp.reserver_email,
+		tp.repre_name, tp.repre_tel, p.pay_name, tp.coupon_kind, tp.coupon_no, tp.use_cash, mc.cash, tp.status,
+		
+		case
+			when tp.coupon_kind = 0 then c.name
+			when tp.coupon_kind = 1 then lc.name
+			else null
+		end as coupon_name
+		
+		from t_purchase tp, member m, coupon c, l_coupon lc, pay p, ticket t, mycash mc
+		
+		where tp.t_purchase_seq = #{t_purchase_seq}
+		and tp.m_seq = m.m_seq
+		and c.coupon_seq(+) = tp.coupon_no
+		and lc.l_coupon_seq(+) = tp.coupon_no
+		and tp.pay_seq = p.pay_seq
+		and mc.purchase_no(+) = tp.t_purchase_seq
+	</select>
+	
+	
+	<!-- [[[[새미]]]] -->
+	<select id="t_purchaseList" resultType="t_purchase" parameterType="int">
+		select tp.*,t.ticket_name from t_purchase tp, ticket t  where  t.ticket_seq = tp.ticket_seq and m_seq = #{m_seq}
+	</select>
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

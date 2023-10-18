@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="rvl">
+	
+	<!-- [[[[현지]]]] -->
+	<insert id="insert" parameterType="rvl">
+		insert into REVIEW_LIKE values(rvlike_seq.nextval, #{rv_seq}, #{m_seq})
+	</insert>
+	
+	
+	<delete id="deleteRVL" parameterType="rvl">
+		delete REVIEW_LIKE where rv_seq = #{rv_seq} and m_seq = #{m_seq}
+	</delete>
+	
+	<select id="countRVL" parameterType="int" resultType="int">
+		select nvl(count(*), 0) rl_cnt from REVIEW_LIKE where rv_seq = #{rv_seq}	
+	</select>
+	
+	<select id="RVL_Mlist" parameterType="int" resultType="Map">
+		select * from
+	        (select rownum rn, n.* from
+	            (select m.m_profile, m.m_nickname, m.m_seq
+	            from MEMBER m, REVIEW_LIKE rl, REVIEW r
+	            where rl.m_seq = m.m_seq
+	            and rl.rv_seq = r.rv_seq
+	            and rl.rv_seq = #{rv_seq}
+	            order by rl.rvlike_seq) n)
+	            <![CDATA[
+			        where rn >= 1 and rn <= 20
+				]]>
+	</select>
+	
+	<select id="checkRVL" parameterType="rvl" resultType="rvl">
+		select * from REVIEW_LIKE where m_seq = #{m_seq} and rv_seq = #{rv_seq}
+	</select>
+	
+	
+	
+	<!-- [[[[희지]]]] -->
+	<select id="findReview" parameterType="int" resultType='map'>
+		select distinct f.name, rv.m_seq,
+		(select count(*) from review_like where rv_seq = #{rv_seq}) cnt
+		from form f, review rv, review_like rl
+		where rl.rv_seq = #{rv_seq}
+		and rl.rv_seq = rv.rv_seq
+		and rv.f_seq = f.f_seq
+	</select>
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

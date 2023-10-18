@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tc">
+	
+	
+	<insert id="insert" parameterType="tc">
+		insert into TICKET_CATE values(ticket_cate_seq.nextval, #{ticket_cate_name})
+	</insert>
+	
+	<update id="update" parameterType="tc">
+		update TICKET_CATE set ticket_cate_name = #{ticket_cate_name} where ticket_cate_seq = #{ticket_cate_seq}
+	</update>
+
+	<delete id="deleteTC" parameterType="int">
+		delete TICKET_CATE where ticket_cate_seq = #{ticket_cate_seq}
+	</delete>	
+	
+	<select id="selectTClist" resultType="tc">
+		select * from TICKET_CATE
+	</select>
+	
+	<select id="tkcateName" resultType="String" parameterType="int">
+		select ticket_cate_name from TICKET_CATE where ticket_cate_seq = #{ticket_cate_seq}
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="addr1">
+
+	<!-- 주소 1 리스트 -->
+	<select id="addr1List" resultType="addr1">
+		select *from addr1 order by addr1_seq asc
+	</select>
+	
+	<!-- 주소 이름 -->
+	<select id="addr_name" resultType="String" parameterType="int">
+		select addr1_name from addr1 where addr1_seq = #{addr1_seq}
+	</select>
+	
+	
+	<select id="addr1" resultType="addr1">
+		select * from addr1 order by addr1_seq
+	</select>
+	
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="review">
+	
+	<!-- [[[[현지]]]] -->
+	<insert id="insert" parameterType="review">
+		insert into REVIEW values(#{rv_seq}, #{m_seq}, #{f_seq}, #{visitday, jdbcType=VARCHAR}, #{stars}, #{content}, SYSDATE, #{rv_img, jdbcType=VARCHAR}, 0, 0)
+	</insert>
+	
+	<update id="updateRV" parameterType="review">
+		update REVIEW set stars = #{stars}, visitday = #{visitday, jdbcType=VARCHAR}, content = #{content}, rv_img = #{rv_img, jdbcType=VARCHAR} where rv_seq = #{rv_seq}
+	</update>
+	
+	<delete id="deleteMyRV" parameterType="int">
+		delete REVIEW where rv_seq = #{rv_seq}
+	</delete>
+	
+	<select id="selectRVImg" parameterType="int" resultType="String">
+		select rv_img from REVIEW where rv_seq = #{rv_seq}
+	</select>
+	
+	<!-- <select id="getM_seq" parameterType="int" resultType="int">
+		select m_seq from REVIEW where rv_seq = #{rv_seq}
+	</select> -->
+	
+	<select id="nowRV_Seq" resultType="int">
+		select nvl(max(rv_seq), 0) + 1 from REVIEW
+	</select>
+
+	<select id="RVcntForOne" parameterType="int" resultType="int">
+		select count(a.rv_seq)
+		from (select * from REVIEW where report_status = 0) a, FORM f 
+		where f.f_seq = a.f_seq(+)
+		and f.f_seq = #{f_seq}
+		group by f.f_seq
+	</select>
+	
+	<select id="selectRVList" parameterType="Map" resultType="Map">
+		select f.f_seq, m.m_seq, m.m_profile, m.m_nickname, m.m_level, r.visitday, r.stars, r.content, d.ymd, r.rv_img, r.rv_seq, r.report_status, 
+			nvl(rl_cnt, 0) rl_cnt, nvl(my_rv,0) mrv_cnt, nvl(rc_cnt,0) rc_cnt
+			from (select count(*) rl_cnt, rv_seq from REVIEW_LIKE group by rv_seq) rl, 
+				(select count(*) my_rv, m_seq from REVIEW where report_status = 0 group by m_seq) mr,
+				(select count(*) rc_cnt, rv_seq from REVIEW_CMT group by rv_seq) rc,
+		        (select to_char(datetime, 'YYYY-MM-DD') ymd, rv_seq from REVIEW) d,
+				MEMBER m, REVIEW r, FORM f
+				where f.f_seq = #{f_seq}
+				and f.f_seq(+) = r.f_seq
+				and r.m_seq = m.m_seq
+				and r.rv_seq = rl.rv_seq(+)
+				and m.m_seq = mr.m_seq(+)
+				and r.rv_seq = rc.rv_seq(+)
+		        and d.rv_seq = r.rv_seq
+                order by
+                <if test="filter == 0">
+                	NVL(rl.rl_cnt, 0) desc
+                </if>
+                <if test="filter == 1 or filter == null">
+                	d.ymd desc, r.rv_seq desc
+                </if>
+    </select>
+	
+	<select id="selectRV" parameterType="int" resultType="Map">
+		select f.main_img, f.name, f.f_seq, f.cate_seq,
+		CASE
+			WHEN f.cate_seq = 1 THEN tc.t_cate_name
+			WHEN f.cate_seq = 2 THEN hc.h_cate_name
+			ELSE NULL
+		END AS kind_name,
+		a1.addr1_name, a2.addr2_name, m.m_seq, m.m_profile, m.m_nickname, m.m_level, nvl(my_rv, 0) mrv_cnt,
+		r.rv_seq, r.stars, r.visitday, r.content, r.rv_img, d.ymd, nvl(rl_cnt, 0) rl_cnt, nvl(rc_cnt, 0) rc_cnt
+		from (select count(*) rl_cnt, rv_seq from review_like group by rv_seq) rl, 
+		(select count(*) my_rv, m_seq from review group by m_seq) mr,
+		(select count(*) rc_cnt, rv_seq from review_cmt group by rv_seq) rc,
+		(select to_char(datetime, 'YYYY-MM-DD') ymd, rv_seq from REVIEW) d,
+        FORM f, TOUR_CATE tc, ADDR1 a1, ADDR2 a2, MEMBER m, REVIEW r, CATE ca, H_CATE hc
+        where f.f_seq = r.f_seq
+        and f.kind = tc.t_cate_seq
+        and f.kind = hc.h_cate_seq
+        and f.cate_seq = ca.cate_seq
+        and f.addr2_seq = a2.addr2_seq
+        and a1.addr1_seq = a2.addr1_seq
+        and r.m_seq = m.m_seq
+        and r.rv_seq = rl.rv_seq(+)
+		and m.m_seq = mr.m_seq(+)
+		and r.rv_seq = rc.rv_seq(+)
+        and r.rv_seq = #{rv_seq}
+        and d.rv_seq = r.rv_seq
+	</select>
+	
+	<select id="m_RVlist" parameterType="int" resultType="Map">
+		select f.f_seq, f.name, r.rv_seq, f.cate_seq, m.m_seq,
+	    CASE
+	        WHEN f.cate_seq = 1 THEN tc.t_cate_name
+	        WHEN f.cate_seq = 2 THEN hc.h_cate_name
+	        WHEN f.cate_seq = 3 THEN ac.a_cate_name
+	        ELSE NULL
+	    END AS kind_name,
+	    a1.addr1_seq, a1.addr1_name, a2.addr2_name, f.main_img,
+	    r.stars, r.visitday, r.content, r.rv_img, r.report_status, d.ymd, nvl(rl_cnt, 0) rl_cnt, nvl(rc_cnt, 0) rc_cnt
+		from (select count(*) rl_cnt, rv_seq from review_like group by rv_seq) rl, 
+	        (select count(*) rc_cnt, rv_seq from review_cmt group by rv_seq) rc,
+			(select to_char(datetime, 'YYYY-MM-DD') ymd, rv_seq from REVIEW) d,
+	        FORM f, TOUR_CATE tc, ADDR1 a1, ADDR2 a2, MEMBER m, REVIEW r, CATE ca, H_CATE hc, A_CATE ac
+	        where f.f_seq = r.f_seq
+	        and f.kind = tc.t_cate_seq
+	        and f.kind = hc.h_cate_seq
+	        and f.kind = ac.a_cate_seq
+	        and f.cate_seq = ca.cate_seq
+	        and f.addr2_seq = a2.addr2_seq
+	        and a1.addr1_seq = a2.addr1_seq
+	        and r.m_seq = m.m_seq
+	        and r.rv_seq = rl.rv_seq(+)
+			and r.rv_seq = rc.rv_seq(+)
+	        and m.m_seq = #{m_seq}
+	        and d.rv_seq = r.rv_seq
+	        order by r.rv_seq desc
+	</select>
+	
+	<select id="rpCnt" resultType="int" parameterType="int">
+		select nvl(sum(count(*)), 0) from REVIEW where report_status in (1, 2) and m_seq = #{m_seq} group by report_status
+	</select>
+	
+	
+	
+	
+	
+	<!-- [[[[새미]]]] -->
+	<!--리뷰 15점 도달 숨김 처리 -->
+	<update id="HiddenRV" parameterType="review">
+		update REVIEW set
+		report_status = 1 where rv_seq = #{rv_seq}
+		and rv_score &gt; 15
+	</update>
+	
+	<!-- 리뷰 숨김 해제 처리 -->
+	<update id="defaultRV" parameterType="review">
+		update REVIEW set
+		report_status = 0 where rv_seq = #{rv_seq}
+	</update>
+
+	<!-- 리뷰 삭제 처리 -->
+	<update id="deleteRV" parameterType="int">
+		update review set report_status = 2
+		where rv_seq =#{rv_seq} 
+	</update>
+	
+	<select id="rv_seqDelete" resultType="map" >
+	    select rv_seq,m_seq from review where rv_seq in (select r.board_no from report r,review rv  
+	    where r.kind=0
+	    and to_date(r.plus30,'yyyy-mm-dd')+1 <![CDATA[<=]]> to_date(sysdate,'yyyy-mm-dd') 
+	    and r.result=1 
+	    and rv.report_status !=2
+	    and r.board_no = rv.rv_seq)
+	</select>
+	
+	<!--리뷰 신고 점수 누적 -->
+	<update id="scoreRV" parameterType="map">
+		update review set rv_score = rv_score + (select score from report_cate where
+		report_cate_seq=#{report_cate_seq})
+		where rv_seq=#{rv_seq}
+	</update>
+	
+	<!-- 리뷰신고 점수 리셋 -->
+	<update id="scoreReset" parameterType="int">
+		update review set rv_score = 0
+		where rv_seq=#{rv_seq}
+	</update>
+	
+	<!-- [[[[희지]]]] -->
+	<select id="whoRv" parameterType="int" resultType="int">
+		select m_seq from review where rv_seq= #{rv_seq}
+	</select>
+	
+	<select id="someInfo" parameterType="int" resultType="map">
+		select f.name, r.m_seq, r.report_status, r.rv_img, rv.cnt
+		from form f, review r, 
+        (select f_seq, count(*) cnt from review group by f_seq)rv
+		where r.rv_seq = #{rv_seq}
+		and r.f_seq = f.f_seq
+        and rv.f_seq = f.f_seq
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

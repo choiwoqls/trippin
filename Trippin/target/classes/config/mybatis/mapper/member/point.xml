@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="point">
+
+
+	<select id="point" parameterType="String" resultType="String">
+		select p_score from point where p_table=#{p_table}
+	</select>
+	
+	<select id="p_seq" parameterType="String" resultType="int">
+		select p_seq from point where p_table = #{p_table}
+	</select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

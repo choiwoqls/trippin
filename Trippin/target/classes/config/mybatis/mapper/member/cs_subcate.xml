@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cs_subcate">
+	
+	<select id="csSubCateAll" resultType="cs_subcate" >
+	select * from cs_subcate 
+	
+	</select>
+	
+	<select id="csSubCateAllAjax" resultType="cs_subcate" parameterType="map">
+		select 
+		<if test="what=='숙소'or what=='투어,티켓' or what=='서비스 일반'">
+			cs.* 
+		</if>
+		<if test="what=='공통'or what=='공지사항'">
+			c.*
+		</if>
+		<if test="what=='all'">
+			c.*,cs.cs_subcate_name
+		</if>
+		from
+		<if test="what=='숙소'or what=='투어,티켓' or what=='서비스 일반'">
+			cs_subcate cs
+		</if> 
+		<if test="what=='공통' or what=='공지사항'">
+			cs c, cs_cate cc
+		</if>
+		<if test="what=='all'">
+			cs c,cs_subcate cs
+		</if>	
+		<if test="what=='숙소'">
+			where cs_cate_seq=1
+		</if>
+		<if test="what=='투어,티켓'">
+			where cs_cate_seq=2
+		</if>
+		<if test="what=='서비스 일반'">
+			where cs_cate_seq=3
+		</if>
+		<if test="what=='공통'">
+			where c.cs_cate_seq=4 and  c.cs_cate_seq = cc.cs_cate_seq
+		</if>
+		<if test="what=='공지사항'">
+			where c.cs_cate_seq=5 and  c.cs_cate_seq = cc.cs_cate_seq
+		</if>
+		<if test="what=='all'">
+			where c.cs_subcate_seq = cs.cs_subcate_seq(+)
+			order by c.cs_seq desc
+		</if>
+	</select>
+
+	<select id="allClist" resultType="cs_subcate" parameterType="map">
+		select * from
+		(
+		select rownum rn,t.* from
+		(
+		select	c.*,cs.cs_subcate_name,cc.cs_cate_name from cs c,cs_subcate cs,cs_cate cc
+		where c.cs_subcate_seq = cs.cs_subcate_seq(+)
+		and cc.cs_cate_seq(+) = c.cs_cate_seq
+		<if test="type != null">
+			and ${type} like '%${word}%'
+		</if>	
+			order by c.cs_seq desc )t)
+		<if test="what == 'all'">
+		<![CDATA[
+				where rn >=1 and rn <= #{last}
+		]]>
+		</if>
+	</select>
+	
+	
+	<select id="csSubCateOne" resultType="cs_subcate" parameterType="int">
+		select * from cs_subcate where cs_cate_seq=#{cs_cate_seq}
+	</select>	
+		
+	<select id="csSubCateMyOne" resultType="cs_subcate" parameterType="int">
+		select * from cs_subcate where cs_cate_seq=#{cs_seq}
+	</select>	
+	
+	<select id="csSubCateList" resultType="cs_subcate">
+		select * from cs_subcate
+	</select>
+		
+	<select id="csSubCateAll1" resultType="cs_subcate">
+		select * from cs_subcate where cs_cate_seq=1
+	</select>
+	
+	<select id="csSubCateAll2" resultType="cs_subcate">
+		select * from cs_subcate where cs_cate_seq=2
+	</select>
+	
+	<select id="csSubCateAll3" resultType="cs_subcate">
+		select * from cs_subcate where cs_cate_seq=3
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

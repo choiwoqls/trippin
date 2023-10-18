@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tour">
+	
+	<select id="selectTerm" resultType="String" parameterType="int">
+		select term_hours from TOUR where f_seq = #{f_seq}
+	</select>
+	
+	<insert id="insert" parameterType="tour">
+		insert into TOUR (t_seq, f_seq, info, tour_img, use_fee, run_info, term_hours) values(t_seq.nextval, #{f_seq}, #{info, jdbcType=VARCHAR}, #{tour_img, jdbcType=VARCHAR}, #{use_fee, jdbcType=VARCHAR}, #{run_info, jdbcType=VARCHAR}, #{term_hours, jdbcType=VARCHAR})
+	</insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

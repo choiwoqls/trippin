@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hours">
+	
+	<insert id="insert" parameterType="hours">
+		insert into HOURS values(hours_seq.nextval, #{f_seq}, #{day_seq}, #{hours_cate_seq}, #{time, jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="selectHours" parameterType="int" resultType="Map">
+		select d.day_name, hc.hours_cate_seq, h.time
+		from DAY d, HOURS_CATE hc, HOURS h, FORM f
+		where d.day_seq = h.day_seq
+		and hc.hours_cate_seq = h.hours_cate_seq
+		and f.f_seq = h.f_seq
+		and h.f_seq = #{f_seq}
+		order by d.day_seq, h.hours_seq
+	</select>
+	
+	
+	<!-- 히지 -->
+	<!-- 시간 넣기 -->
+	<!-- <insert id="insert" parameterType="hours">
+		insert into hours values(#{hours_seq}, #{f_seq}, #{day_seq}, #{hours_cate_seq}, #{time, jdbcType=VARCHAR})
+	</insert> -->
+	
+	<!-- 수정 용 -->
+	<select id="hours" parameterType="int" resultType="hours">
+		select * from hours where f_seq = #{f_seq} order by day_seq, hours_seq
+	</select>
+	
+	<!-- 상세 페이지 용 -->
+	<select id="oneHour" parameterType="int" resultType="hours">
+		select h.day_seq, d.day_name, h.hours_cate_seq, time
+		from hours h, day d
+		where h.day_seq = d.day_seq
+		and f_seq = #{f_seq}
+		order by h.day_seq, h.hours_seq
+	</select>
+	
+	<!-- 인서트 용 시퀀스(추후 확인필요) -->
+	<select id="hours_seq" resultType="int">
+		select nvl(max(hours_seq),0)+1 from hours
+	</select>
+	
+	<delete id="delete" parameterType="hours">
+		delete hours where f_seq=#{f_seq} and day_seq=#{day_seq}
+	</delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

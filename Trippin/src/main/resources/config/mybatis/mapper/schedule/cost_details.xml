@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cost_details">
+
+	<select id="costDetailsSeq"  resultType="int">
+		select cost_details_seq.nextval from dual
+	</select>
+	
+	<select id="cdMList" parameterType="Map" resultType="int">
+		select m_seq from cost_details where cost_seq = #{cost_seq} and
+		<if test="type != null">
+			<if test="type == 'pay'">
+				payman = 1
+			</if>
+			<if test="type !='pay'">
+				 dutch = 1				
+			</if>
+		</if>
+	</select>
+
+	<insert id="newCostDetails" parameterType="cost_details">
+		insert into cost_details values(#{cost_details_seq}, #{cost_seq}, #{m_seq}, #{paymen}, #{dutch}, #{pay_money}, #{dutch_money})
+	</insert>
+	
+	<delete id="delCD" parameterType="int">
+		delete cost_details where cost_details_seq = #{cost_details_seq}
+	</delete>
+	
+	<delete id="delCostDetails" parameterType="int">
+		delete cost_details where cost_seq = #{cost_seq}
+	</delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

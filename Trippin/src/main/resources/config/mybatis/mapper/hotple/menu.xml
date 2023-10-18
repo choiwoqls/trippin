@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="menu">
+	
+	<insert id="insert" parameterType="menu">
+		insert into menu values(menu_seq.nextval, #{f_seq}, #{name},
+		#{info, jdbcType=VARCHAR}, #{price}, #{price_detail, jdbcType=VARCHAR},
+		#{menu_img})
+	</insert>
+	
+	<select id="menu" parameterType="int" resultType="menu">
+		select * from menu where f_seq = #{f_seq} order by menu_seq
+	</select>
+	
+	<delete id="delete" parameterType="int">
+		delete menu where menu_seq=#{menu_seq}
+	</delete>
+	
+	<select id="seqList" resultType="int" parameterType="int">
+		select menu_seq from menu where f_seq=#{f_seq} order by menu_seq
+	</select>
+	
+	<select id="nowMenu" resultType="int">
+		select nvl(max(menu_seq),0)+1 from menu
+	</select>
+	
+	<update id="update" parameterType="menu">
+		update menu set 
+		name=#{name}, 
+		info=#{info, jdbcType=VARCHAR},
+		price=#{price}, 
+		price_detail=#{price_detail, jdbcType=VARCHAR}
+		where menu_seq=#{menu_seq}
+	</update>
+	
+	<select id="imgPath" parameterType="int" resultType="String">
+		select menu_img from menu where menu_seq = #{menu_seq}
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

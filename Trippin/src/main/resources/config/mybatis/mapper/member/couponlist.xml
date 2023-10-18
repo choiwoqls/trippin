@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="couponlist">
+	
+	<insert id="insert" parameterType="couponlist">
+		insert into couponlist values(couponlist_seq.nextval, #{m_seq}, #{kind}, #{coupon_no}, sysdate, #{valid_date}, 0)
+	</insert>
+	
+	<update id="delete">
+		update couponlist set status=2 where to_date(valid_date,'yyyy-mm-dd')+1 <![CDATA[<=]]> to_date(sysdate,'yyyy-mm-dd') and status=0
+	</update>
+	
+	<update id="use" parameterType="couponlist">
+		update couponlist set status=1 where m_seq=#{m_seq} and kind=#{kind} and coupon_no=#{coupon_no}	
+	</update>
+	
+	<select id="returnCouponOk" parameterType="couponlist" resultType="couponlist">
+		select couponlist_seq, valid_date from couponlist where kind=#{kind} and coupon_no=#{coupon_no} and m_seq=#{m_seq}
+	</select> 
+	
+	<update id="returnCoupon" parameterType="int">
+		update couponlist set status=0 where couponlist_seq = #{couponlist_seq}
+	</update>
+	
+	<select id="couponBye" parameterType="map" resultType="int">
+		select count(*) cnt from couponlist cl, coupon c where c.kind = #{c_kind}  and cl.kind = #{cl_kind} and c.coupon_seq = cl.coupon_no 
+		and <![CDATA[ceil(cl.valid_date - sysdate) <= 5 ]]> and cl.m_seq  = #{m_seq}
+	</select>
+	
+	<select id="spareDay" parameterType="map" resultType="int">
+		select distinct ceil(cl.valid_date - sysdate) spare from couponlist cl, coupon c where c.kind = #{c_kind}  and cl.kind = #{cl_kind} and c.coupon_seq = cl.coupon_no 
+		and <![CDATA[ceil(cl.valid_date - sysdate) <= 5 ]]> and cl.m_seq  = #{m_seq}
+	</select>
+	
+	<select id="l_already" parameterType="java.util.List" resultType="int">
+		select count(*) from couponlist
+		where kind = 1
+		and coupon_no in
+		<foreach collection="list" item="vo" open="(" separator="," close=")">
+			#{vo.l_coupon_seq}
+		</foreach>
+	</select>
+	
+	
+	<!-- [[[[현지]]]] -->
+	<select id="myCoupon" resultType="Map" parameterType="int">
+		select 
+			case when cl.kind = 0 then c.name
+			    when cl.kind = 1 then l.name
+			    else null
+			end as name,
+			to_char(cl.valid_date, 'YYYY-MM-DD') valid_date,
+			to_char(cl.downdate, 'YYYY-MM-DD') downdate,
+			cl.status
+			from couponlist cl, coupon c, l_coupon l, member m
+			where cl.coupon_no = c.coupon_seq
+			and cl.coupon_no = l.l_coupon_seq
+			and cl.m_seq = m.m_seq
+			and m.m_seq = #{m_seq}
+			order by cl.couponlist_seq desc
+	</select>
+	
+	
+	
+</mapper>

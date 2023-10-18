@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mycash">
+
+	<insert id="insert" parameterType="mycash">
+		insert into mycash values(mycash_seq.nextval, #{m_seq}, 
+		<if test="kind == 2">
+			null,
+		</if>
+		<if test="kind != 2">
+			#{kind},
+		</if>
+		<if test="purchase_no == 0">
+			null,
+		</if>
+		<if test="purchase_no != 0">
+			#{purchase_no},
+		</if>
+		#{cash}, 
+		<if test="cash_date == null">
+			sysdate,
+		</if>
+		<if test="cash_date != null">
+			#{cash_date}, 
+		</if>
+		#{spare}, #{what}, sysdate)
+	</insert>
+	
+	<!-- 적립예정 -> 적립으로 변경 -->
+	<update id="updateEarn" >
+		update mycash set what = 1 <![CDATA[ where cash_date <= sysdate and spare>0 ]]> and what = 0
+	</update>
+	
+	<!-- 소멸 대상 캐시 -->
+	<select id="endCash" resultType="int" parameterType="int">
+		select nvl(sum(spare),0) from mycash 
+		where <![CDATA[ cash_date <= (select last_day(add_months(sysdate, -12)) from dual) ]]> 
+		and what=1 and m_seq=#{m_seq}
+	</select>
+	
+	<!-- 소멸 예정(1달 이내) 캐시 -->
+	<select id="soonEnd" resultType="int" parameterType="int">
+		select nvl(sum(spare),0) from mycash 
+		where <![CDATA[ cash_date <= (select last_day(add_months(sysdate, -11)) from dual) and spare>0]]> 
+		and what=1 and m_seq=#{m_seq}
+	</select>
+	
+	<!-- 소멸 대상 캐시 잔여 없애기 -->
+	<update id="updateEnd" parameterType="int">
+		update mycash set spare = 0 
+		where <![CDATA[ cash_date <= (select last_day(add_months(sysdate, -12)) from dual) and spare > 0]]> and what=1
+		and m_seq=#{m_seq}
+	</update>
+	
+	<!-- 사용가능 캐시 내역 -->
+	<select id="canUseList" parameterType="int" resultType="mycash">
+		select * from mycash where <![CDATA[spare>0]]> and what=1 and m_seq = #{m_seq} order by cash_date
+	</select>
+	
+	<!-- 사용 가능 캐시 금액 -->
+	<select id="canUse" parameterType="int" resultType="int">
+		select nvl(sum(spare),0) from mycash where spare!=0 and what=1 and m_seq=#{m_seq} order by cash_date
+	</select>
+	
+	<!-- 사용 시 캐시 차감 용 -->
+	<update id="updateUse" parameterType="mycash">
+		update mycash set spare=#{spare} where mycash_seq=#{mycash_seq}
+	</update>
+	
+	<!-- 티켓 예매 취소 시 캐시 취소-->
+	<update id="cancelCash" parameterType="mycash">
+		update mycash set spare = 0, what=4 where kind=#{kind} and purchase_no=#{purchase_no}
+	</update>
+	
+	<!-- 나의 티켓 캐시내역 -->
+	<select id="mycash" parameterType="int" resultType="map">
+		select mc.purchase_no, mc.what, to_char(mc.datetime, 'yyyy.MM.dd') datetime, 
+		mc.cash, mc.spare, to_char(mc.cash_date, 'yyyy.MM.dd') cash_date , 
+		t.ticket_name, tp.serial_no
+		from mycash mc, ticket t, t_purchase tp
+		where mc.m_seq = #{m_seq}
+		and (mc.kind = 1 or mc.kind is null)
+		and mc.purchase_no = tp.t_purchase_seq(+)
+		and t.ticket_seq = tp.ticket_seq(+)
+		order by mc.datetime desc, purchase_no
+	</select>
+	
+</mapper>
+

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "HTTP://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="REUSE" />
+	</settings>
+
+	<typeAliases>
+		<!-- member -->	
+		<typeAlias type="vo.member.MemberVO" alias="member"/>
+		
+		<typeAlias type="vo.member.CS_CateVO" alias="cs_cate"/>
+		<typeAlias type="vo.member.CS_SubCateVO" alias="cs_subcate"/>
+		<typeAlias type="vo.member.CSVO" alias="cs"/>
+		<typeAlias type="vo.member.RevisionVO" alias="revision"/>
+		<typeAlias type="vo.member.Revision_CateVO" alias="revision_cate"/>
+		<typeAlias type="vo.member.InquiryVO" alias="inquiry"/>
+		<typeAlias type="vo.member.C_InquiryVO" alias="c_inquiry"/>
+		
+		<typeAlias type="vo.member.S_ReportVO" alias="s_report"/>
+		<typeAlias type="vo.member.PointVO" alias="point"/>
+		<typeAlias type="vo.member.MypointVO" alias="mypoint"/>
+		<typeAlias type="vo.member.Level_PointVO" alias="lp"/> 
+		<typeAlias type="vo.member.NoticelistVO" alias="noticelist"/> 
+		<typeAlias type="vo.member.CouponlistVO" alias="couponlist"/> 
+		
+		<typeAlias type="vo.member.NewplaceVO" alias="newplace"/>
+		<typeAlias type="vo.member.S_ReportVO" alias="s_report"/>
+		
+		<typeAlias type="vo.member.CouponlistVO" alias="couponlist"/>
+		<typeAlias type="vo.member.CashVO" alias="cash"/>
+		<typeAlias type="vo.member.MycashVO" alias="mycash"/>
+		<typeAlias type="vo.member.NoticeVO" alias="notice"/>
+		<typeAlias type="vo.member.NoticelistVO" alias="noticelist"/>
+		<typeAlias type="vo.member.Notice_CateVO" alias="notice_cate"/>
+		
+		<typeAlias type="vo.member.ReportVO" alias="report"/>
+		<typeAlias type="vo.member.Report_CateVO" alias="report_cate"/>
+		<typeAlias type="vo.member.M_Report_CateVO" alias="m_report_cate"/>
+		<typeAlias type="vo.member.M_ReportVO" alias="m_report"/>
+		
+		<!-- sche -->
+		<typeAlias type="vo.sche.ScheVO" alias="sche"/>
+		<typeAlias type="vo.sche.StyleVO" alias="style"/>
+		<typeAlias type="vo.sche.CityVO" alias="city"/>
+		<typeAlias type="vo.sche.InviteVO" alias="invite"/>
+		<typeAlias type="vo.sche.PlanVO" alias="plan"/>
+		<typeAlias type="vo.sche.CostVO" alias="cost"/>
+		<typeAlias type="vo.sche.Cost_DetailsVO" alias="cost_details"/>
+		<typeAlias type="vo.sche.MoneyListVO" alias="moneylist"/>
+		<typeAlias type="vo.sche.CalculateVO" alias="calculate"/>
+		
+		<typeAlias type="vo.sche.Clist_CateVO" alias="clist_cate"/>
+		<typeAlias type="vo.sche.Clist_ItemsVO" alias="clist_items"/>
+		<typeAlias type="vo.sche.Clist_MemoVO" alias="clist_memo"/>
+		<typeAlias type="vo.sche.MyclistVO" alias="myclist"/>	
+		<typeAlias type="vo.sche.NuguVO" alias="nugu"/>
+		
+		<!-- slog -->
+		<typeAlias type="vo.slog.SlogVO" alias="slog"/>
+		<typeAlias type="vo.slog.Day_SlogVO" alias="day_slog"/>
+		<typeAlias type="vo.slog.Place_SlogVO" alias="place_slog"/>
+		<typeAlias type="vo.slog.Slog_AddVO" alias="slog_add"/>
+		<typeAlias type="vo.slog.Slog_LikeVO" alias="slog_like"/>
+		<typeAlias type="vo.slog.Slog_CmtVO" alias="slog_cmt"/>
+		<typeAlias type="vo.slog.Slog_Cmt_LikeVO" alias="slog_cmt_like"/>
+		
+
+		<!-- common -->
+		<typeAlias type="vo.common.Addr1VO" alias="addr1"/>
+		<typeAlias type="vo.common.Addr2VO" alias="addr2"/>
+		<typeAlias type="vo.common.CateVO" alias="cate"/>
+		<typeAlias type="vo.common.DayVO" alias="day"/>
+		<typeAlias type="vo.common.FormVO" alias="form"/>
+		<typeAlias type="vo.common.JjimVO" alias="jjim"/>
+		
+		<typeAlias type="vo.common.HoursVO" alias="hours"/>
+		<typeAlias type="vo.common.ReviewVO" alias="review"/>
+		<typeAlias type="vo.common.Review_LikeVO" alias="rvl"/>
+		<typeAlias type="vo.common.Review_CmtVO" alias="rc"/>
+		<typeAlias type="vo.common.Review_Cmt_LikeVO" alias="rcl"/>
+		
+		<typeAlias type="vo.common.F_TipsVO" alias="f_tips"/>
+		<typeAlias type="vo.common.Tip_KeywordVO" alias="tip_keyword"/>
+		<typeAlias type="vo.common.TipsVO" alias="tips"/>
+		
+		<typeAlias type="vo.common.PayVO" alias="pay"/>
+		<typeAlias type="vo.common.Cancel_CateVO" alias="cancel_cate"/>
+		<typeAlias type="vo.common.CancelVO" alias="cancel"/>
+		<typeAlias type="vo.common.RefundVO" alias="refund"/>
+		<typeAlias type="vo.common.Hours_CateVO" alias="hours_cate"/>
+		
+		
+		<!-- accom -->
+		<typeAlias type="vo.accom.PaymentVO" alias="payment"/>
+		<typeAlias type="vo.accom.A_CateVO" alias="a_cate"/>
+		<typeAlias type="vo.accom.PensionVO" alias="pension"/>
+		<typeAlias type="vo.accom.Hs_subVO" alias="hssub"/>
+		<typeAlias type="vo.accom.Cf_subVO" alias="cfsub"/>
+		<typeAlias type="vo.accom.ReservationVO" alias="reservation"/>
+		
+		
+		<!-- tour -->
+		<typeAlias type="vo.tour.Tour_CateVO" alias="tour_cate"/>
+		<typeAlias type="vo.tour.TourVO" alias="tour"/>
+		
+		
+		<!-- ticket -->
+		<typeAlias type="vo.ticket.T_PartnerVO" alias="t_ptn"/>
+		<typeAlias type="vo.ticket.Ticket_CateVO" alias="tc"/>
+		<typeAlias type="vo.ticket.Include_ItemsVO" alias="incl_itms"/>
+		<typeAlias type="vo.ticket.T_AmountVO" alias="t_amount"/>
+		<typeAlias type="vo.ticket.Ccp_WordVO" alias="ccp_word"/>
+		<typeAlias type="vo.ticket.OptVO" alias="opt"/>
+		<typeAlias type="vo.ticket.SuboptVO" alias="subopt"/>
+		<typeAlias type="vo.ticket.TicketVO" alias="ticket"/>
+		<typeAlias type="vo.ticket.T_ReserverVO" alias="t_reserver"/>
+		<typeAlias type="vo.ticket.T_PurchaseVO" alias="t_purchase"/>
+		<typeAlias type="vo.ticket.TkjjimVO" alias="tkjjim"/>
+		
+		
+		<!-- admin -->		
+		<typeAlias type="vo.admin.CouponVO" alias="coupon"/>
+		<typeAlias type="vo.admin.L_CouponVO" alias="l_coupon"/>
+		
+		
+		<!-- hotple -->
+		<typeAlias type="vo.hotple.BranchVO" alias="branch"/>
+		<typeAlias type="vo.hotple.H_CateVO" alias="h_cate"/>
+		<typeAlias type="vo.hotple.HotpleVO" alias="hotple"/>
+		<typeAlias type="vo.hotple.MenuVO" alias="menu"/>
+		
+		
+	</typeAliases>
+
+<!-- *********************************************************************************************************** -->
+
+	<mappers>
+		<!-- [[[[공통]]]] -->
+		<mapper resource="config/mybatis/mapper/member/member.xml"/>
+		<mapper resource="config/mybatis/mapper/common/hours.xml"/>
+		<mapper resource="config/mybatis/mapper/common/addr1.xml"/>
+		<mapper resource="config/mybatis/mapper/common/addr2.xml"/>
+		<mapper resource="config/mybatis/mapper/common/form.xml"/>
+		<mapper resource="config/mybatis/mapper/common/tip_keyword.xml"/>
+		<mapper resource="config/mybatis/mapper/common/day.xml"/>
+		<mapper resource="config/mybatis/mapper/common/tips.xml"/>
+		<mapper resource="config/mybatis/mapper/common/cate.xml"/>
+		
+		
+		<!-- [[[[재빈]]]] -->
+		<mapper resource="config/mybatis/mapper/schedule/schedule.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/style.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/city.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/invite.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/plan.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/cost.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/cost_details.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/moneylist.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/calculate.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/nugu.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/slog/slog.xml"/>
+		<mapper resource="config/mybatis/mapper/slog/slog_like.xml"/>
+		<mapper resource="config/mybatis/mapper/slog/slog_cmt.xml"/>
+		<mapper resource="config/mybatis/mapper/slog/slog_cmt_like.xml"/>
+		<mapper resource="config/mybatis/mapper/slog/slog_add.xml"/>
+		<mapper resource="config/mybatis/mapper/slog/place_slog.xml"/>
+		<mapper resource="config/mybatis/mapper/slog/myplace.xml"/>
+		<mapper resource="config/mybatis/mapper/slog/day_slog.xml"/>
+		
+		<!-- [[[[현지]]]] -->
+		<mapper resource="config/mybatis/mapper/tour/tour.xml"/>
+		<mapper resource="config/mybatis/mapper/tour/tour_cate.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/common/jjim.xml"/>
+		<mapper resource="config/mybatis/mapper/member/newplace.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/ticket/t_partner.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/ticket_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/include_items.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/tkjjim.xml"/>
+		
+		
+		
+		<!-- [[[[새미]]]] -->
+		<mapper resource="config/mybatis/mapper/schedule/clist_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/clist_items.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/clist_memo.xml"/>
+		<mapper resource="config/mybatis/mapper/schedule/myclist.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/member/cs_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/member/cs_subcate.xml"/>
+		<mapper resource="config/mybatis/mapper/member/cs.xml"/>
+		<mapper resource="config/mybatis/mapper/member/revision.xml"/>
+		<mapper resource="config/mybatis/mapper/member/revision_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/member/inquiry.xml"/>
+		<mapper resource="config/mybatis/mapper/member/c_inquiry.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/accom/payment.xml"/>
+		<mapper resource="config/mybatis/mapper/member/s_report.xml"/>
+
+		
+		<!-- [[[[희지]]]] -->
+		<mapper resource="config/mybatis/mapper/hotple/h_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/hotple/hotple.xml"/>
+		<mapper resource="config/mybatis/mapper/hotple/menu.xml"/>
+		<mapper resource="config/mybatis/mapper/hotple/branch.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/admin/coupon.xml"/>
+		<mapper resource="config/mybatis/mapper/admin/l_coupon.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/member/couponlist.xml"/>
+		<mapper resource="config/mybatis/mapper/member/cash.xml"/>
+		<mapper resource="config/mybatis/mapper/member/mycash.xml"/>
+		<mapper resource="config/mybatis/mapper/member/noticelist.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/ticket/t_amount.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/member/point.xml"/>
+		<mapper resource="config/mybatis/mapper/member/mypoint.xml"/>
+		<mapper resource="config/mybatis/mapper/member/level_point.xml"/>
+		<mapper resource="config/mybatis/mapper/member/noticelist.xml"/>
+		<mapper resource="config/mybatis/mapper/member/couponlist.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/common/cancel_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/common/cancel.xml"/>
+		<mapper resource="config/mybatis/mapper/common/refund.xml"/>
+		<mapper resource="config/mybatis/mapper/common/f_tips.xml"/>
+		
+		<mapper resource="config/mybatis/mapper/common/pay.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/opt.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/subopt.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/ccp_word.xml"/>
+		
+		<!-- [[[[현지, 희지]]]] -->
+		<mapper resource="config/mybatis/mapper/ticket/ticket.xml"/>
+		<mapper resource="config/mybatis/mapper/common/review_cmt_like.xml"/>
+		<mapper resource="config/mybatis/mapper/common/review_like.xml"/>
+		
+		
+		<!-- [[[[희지, 새미]]]] -->
+		<mapper resource="config/mybatis/mapper/member/report_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/member/report.xml"/>
+		<mapper resource="config/mybatis/mapper/member/m_report_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/member/m_report.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/t_reserver.xml"/>
+		<mapper resource="config/mybatis/mapper/ticket/t_purchase.xml"/>
+
+
+		<!-- [[[[현지, 새미]]]] -->
+		<mapper resource="config/mybatis/mapper/common/review_cmt.xml"/>
+		<mapper resource="config/mybatis/mapper/common/review.xml"/>
+
+		<!-- [[[[기범]]]] -->
+		<mapper resource="config/mybatis/mapper/accom/a_cate.xml"/>
+		<mapper resource="config/mybatis/mapper/accom/accom.xml"/>
+		
+		
+		
+		
+		</mappers>
+		
+	
+	
+</configuration>

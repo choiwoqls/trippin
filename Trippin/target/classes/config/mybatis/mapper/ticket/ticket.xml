@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ticket">
+	
+	<!-- 현지 -->
+	<insert id="insert" parameterType="ticket">
+		insert into TICKET values(#{ticket_seq}, #{ticket_cate_no}, #{ticket_img}, #{ticket_name}, #{ticket_intro, jdbcType=VARCHAR}, #{addr2_seq},
+		#{voucher, jdbcType=INTEGER}, #{cancel_status, jdbcType=INTEGER}, #{usemethod, jdbcType=VARCHAR},
+		#{t_partner_seq}, #{title}, #{content},
+		#{sell_date, jdbcType=DATE}, #{valid_type, jdbcType=INTEGER}, #{valid_date, jdbcType=VARCHAR}, #{min_pp, jdbcType=INTEGER}, #{tour_type, jdbcType=VARCHAR}, #{language, jdbcType=VARCHAR}, #{use_condition, jdbcType=VARCHAR},
+		#{ticket_summer}, #{special_info, jdbcType=VARCHAR}, #{use_info, jdbcType=VARCHAR}, #{include, jdbcType=VARCHAR}, #{not_include, jdbcType=VARCHAR}, #{more_info, jdbcType=VARCHAR}, #{faq, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateTK" parameterType="ticket">
+		update TICKET set 
+		ticket_cate_no = #{ticket_cate_no},
+		ticket_img = #{ticket_img},
+		ticket_name = #{ticket_name},
+		ticket_intro = #{ticket_intro, jdbcType=VARCHAR},
+		addr2_seq = #{addr2_seq},
+		voucher = #{voucher, jdbcType=INTEGER},
+		cancel_status = #{cancel_status, jdbcType=INTEGER},
+		usemethod = #{usemethod, jdbcType=VARCHAR},
+		t_partner_seq = #{t_partner_seq},
+		title = #{title},
+		content = #{content},
+		sell_date = #{sell_date, jdbcType=DATE},
+		valid_type = #{valid_type, jdbcType=INTEGER},
+		valid_date = #{valid_date, jdbcType=VARCHAR},
+		min_pp = #{min_pp, jdbcType=INTEGER},
+		tour_type = #{tour_type, jdbcType=VARCHAR},
+		language = #{language, jdbcType=VARCHAR},
+		use_condition = #{use_condition, jdbcType=VARCHAR},
+		ticket_summer = #{ticket_summer},
+		special_info = #{special_info, jdbcType=VARCHAR},
+		use_info = #{use_info, jdbcType=VARCHAR},
+		include = #{include, jdbcType=VARCHAR},
+		not_include = #{not_include, jdbcType=VARCHAR},
+		more_info =  #{more_info, jdbcType=VARCHAR}, #{faq, jdbcType=VARCHAR}
+		faq =  #{faq, jdbcType=VARCHAR}
+		where ticket_seq = #{ticket_seq}
+	</update>
+	
+	<select id="nowTicket_seq" resultType="int">
+		select nvl(max(ticket_seq), 0) + 1 from TICKET
+	</select>
+	
+	<select id="TcateNames" resultType="String" parameterType="int">
+		select ticket_cate_name
+	    from ticket_cate where ticket_cate_seq in
+	    (select trim(regexp_substr(ticket_cate_no, '[^,]+', 1, level)) as seq
+	    from ticket where ticket_seq = #{ticket_seq}
+	    <![CDATA[
+	    connect by level <= length(ticket_cate_no) - length(replace(ticket_cate_no, ','))+1)
+	    ]]>
+	    order by ticket_cate_seq
+	</select>
+	
+	<select id="ticketList" resultType="Map">
+		select t.ticket_seq, t.ticket_name, a2.addr2_name, p.t_partner_name
+		from TICKET t, ADDR2 a2, T_PARTNER p
+		where t.addr2_seq = a2.addr2_seq
+		and t.t_partner_seq = p.t_partner_seq
+		order by t.ticket_seq
+	</select>
+	
+	<select id="ticketCnt" resultType="int">
+		select count(*) from TICKET
+	</select>
+	
+	<select id="selectTK" resultType="ticket" parameterType="int">
+		select * from TICKET where ticket_seq = #{ticket_seq}
+	</select>
+	
+	<select id="tkList" resultType="Map" parameterType="Map">
+		SELECT ROWNUM AS rn, t.*
+		FROM (
+		    SELECT DISTINCT tk.ticket_seq, tk.ticket_img, tk.ticket_name, tk.ticket_intro, tp.t_partner_name, a2.addr2_name, tk.ticket_cate_no, NVL(x.TKJJIM, 0) jj, p.min_price
+		    FROM TICKET tk
+		    JOIN ADDR2 a2 ON tk.addr2_seq = a2.addr2_seq
+		    LEFT JOIN (
+		        SELECT o.ticket_seq, MIN(s.subopt_price) AS min_price
+		        FROM SUBOPT s
+		        JOIN OPT o ON s.opt_seq = o.opt_seq
+		        GROUP BY o.ticket_seq
+		    ) p ON tk.ticket_seq = p.ticket_seq
+		    LEFT JOIN (
+		        SELECT COUNT(*) TKJJIM, j.ticket_seq
+		        FROM TKJJIM j
+		        JOIN TICKET tk ON j.ticket_seq = tk.ticket_seq
+		        GROUP BY j.ticket_seq
+		    ) x ON tk.ticket_seq = x.ticket_seq
+		    LEFT JOIN OPT o ON tk.ticket_seq = o.ticket_seq
+		    LEFT JOIN SUBOPT s ON o.opt_seq = s.opt_seq
+		    JOIN T_PARTNER tp on tk.t_partner_seq = tp.t_partner_seq
+		    order by tk.ticket_seq desc
+		) t
+		<![CDATA[
+		WHERE ROWNUM >= #{first} AND ROWNUM <= #{last}
+		]]>
+	</select>
+	
+	<select id="tkCNT" resultType="int">
+		select count(*) from TICKET
+	</select>
+	
+	<select id="selectTK_m" parameterType="int" resultType="Map">
+		select tk.*, a1.addr1_name, a2.addr2_name, NVL(x.jjim, 0) jj, p.min_price, tp.*
+	    from TICKET tk, T_PARTNER tp, ADDR1 a1, ADDR2 a2,
+	    (select tk.ticket_seq,
+            case when count(j.tkjjim_seq) > 0 then count(j.tkjjim_seq)
+                else null
+            end as jjim
+            from TICKET tk, TKJJIM j
+            where j.ticket_seq(+) = tk.ticket_seq
+            group by tk.ticket_seq) x,
+	    (SELECT o.ticket_seq, MIN(s.subopt_price) AS min_price
+	        FROM SUBOPT s, OPT o
+	        where s.opt_seq = o.opt_seq
+	        group by o.ticket_seq) p
+	    where 
+	    tk.addr2_seq = a2.addr2_seq
+	    and a2.addr1_seq = a1.addr1_seq
+	    and tk.t_partner_seq = tp.t_partner_seq
+	    and tk.ticket_seq = p.ticket_seq
+        and x.ticket_seq = tk.ticket_seq
+	    and tk.ticket_seq = #{ticket_seq}
+	</select>
+	
+	<select id="selectCCP" parameterType="int" resultType="Map">
+		select c.*, cw.*
+	    from TICKET tk, CCP c, CCP_WORD cw
+	    where tk.ticket_seq = cw.ticket_seq
+	    and cw.ccp_seq = c.ccp_seq
+	    and tk.ticket_seq = #{ticket_seq}
+	</select>
+	
+	
+	
+	<!-- 희지 -->
+	<select id="valid" parameterType="int" resultType="ticket">
+		select to_char(sell_date, 'yyyy-MM-dd') sell_date, valid_type, valid_date from ticket where ticket_seq=#{ticket_seq} 
+	</select>
+	
+	<select id="ticketName" parameterType="int" resultType="String">
+		select ticket_name from ticket where ticket_seq=#{ticket_seq} 
+	</select>
+	
+	<select id="cancel_status" parameterType="int" resultType="int">
+		select cancel_status from ticket where ticket_seq = #{ticket_seq}
+	</select>
+
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

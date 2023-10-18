@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="m_report_cate">
+
+	<!-- [[[[희지]]]] -->
+	<select id="m_report_cate" resultType="m_report_cate">
+		select * from m_report_cate order by m_report_cate_seq
+	</select>
+	
+	
+	<!-- [[[[새미]]]] -->
+	<!-- <select id="mRepCtName" resultType="m_report_cate"> 
+		select m_report_cate_name from m_report_cate
+	</select> -->
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

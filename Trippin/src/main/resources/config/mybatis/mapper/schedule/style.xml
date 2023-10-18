@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="style">
+	
+	
+	<!-- [[[[재빈]]]] -->
+	<!-- 여행스타일 리스트 -->
+	<select id="styleList" resultType="style">
+		select *from style
+	</select>
+	
+	<!-- 누구와 리스트 -->
+	<select id="nuguList" resultType="vo.sche.NuguVO">
+		select *from nugu
+	</select>
+	
+
+	<!-- [[[[현지]]]] -->
+	<select id="selectWhat" parameterType="int" resultType="String">
+		select style_what from STYLE where style_seq = #{style_seq}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

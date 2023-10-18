@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="day_slog">
+
+	<select id="day_slogSeq" resultType="int">
+		select day_slog_seq.nextval from dual
+	</select>
+	
+	<insert id="newDaySlog" parameterType="day_slog">
+		insert into day_slog values(#{day_slog_seq}, #{slog_seq}, #{day_no}, #{content}, #{sdate}, #{ydate})
+	</insert>
+	
+	<select id="daySlogList" parameterType="int" resultType="Map">
+		select *from day_slog where slog_seq = #{slog_seq} order by day_slog_seq
+	</select>
+	
+	<update id="reDaySlogContent" parameterType="day_slog">
+		update day_slog set content = #{content} where day_slog_seq = #{day_slog_seq}
+	</update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

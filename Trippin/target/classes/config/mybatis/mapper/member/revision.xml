@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="revision">
+
+
+	<!-- [[[[새미]]]] -->
+	<insert id="revInsert" parameterType="revision">
+		insert into revision
+		values(#{revision_seq},#{revision_cate_seq},#{m_seq},#{f_seq}
+		,#{content},sysdate,0,null,#{revision_img, jdbcType=VARCHAR},null)
+	</insert>
+
+	<select id="revSeqOne" resultType="int">
+		select revision_seq.nextval
+		from dual
+	</select>
+
+	<!-- status update -->
+	<update id="upStatusRev" parameterType="int">
+		update revision set
+		status=1 where revision_seq = #{revision_seq}
+	</update>
+
+	<!-- 전체 리스트 -->
+	<select id="appAllRev" resultType="map" parameterType="map">
+		select *
+		from (
+		select rownum as rn, t.*
+		from (
+		select
+		r.revision_seq,r.content,r.datetime,r.status,r.checkdate,
+		rc.revision_cate_name, f.cate_seq, m.m_seq, m.m_nickname
+		from
+		revision
+		r, revision_cate rc, form f, member m
+		where
+		r.revision_cate_seq = rc.revision_cate_seq
+		and
+		r.f_seq= f.f_seq(+)
+		and
+		r.m_seq = m.m_seq
+		<if test="type != null">
+			and ${type} like '%${word}%'
+		</if>
+		order by r.revision_seq
+		) t
+		)
+		<![CDATA[
+			where rn >= #{first} and rn <= #{last}
+		]]>
+	</select>
+
+	<select id="revisionTotal" resultType="int" parameterType="map">
+		select
+		count(*) from
+		revision r,revision_cate rc,form f,member m
+		where
+		r.revision_cate_seq =
+		rc.revision_cate_seq and
+		r.f_seq= f.f_seq(+) and
+		r.m_seq = m.m_seq
+		<if test="type != null">
+			and ${type} like '%${word}%'
+		</if>
+		
+		order by r.revision_seq
+	</select>
+
+
+	<!-- 미승인 리스트 -->
+	<select id="unappRev" resultType="revision">
+		select
+		r.*,rc.revision_cate_name,c.cate_name, m.m_nickname
+		from revision
+		r,revision_cate rc,form f,cate c,member m
+		where
+		r.revision_cate_seq =
+		rc.revision_cate_seq
+		and f.cate_seq = c.cate_seq
+		and
+		r.m_seq = m.m_seq
+		and status =0
+	</select>
+
+	<!-- 승인 리스트 -->
+	<select id="appRev" resultType="revision">
+		select
+		r.*,rc.revision_cate_name,c.cate_name, m.m_nickname
+		from revision
+		r,revision_cate rc,form f,cate c,member m
+		where
+		r.revision_cate_seq =
+		rc.revision_cate_seq
+		and f.cate_seq = c.cate_seq
+		and
+		r.m_seq = m.m_seq
+		and status =1
+	</select>
+
+
+	<!-- 부적격 리스트 -->
+	<select id="NotappRev" resultType="revision">
+		select
+		r.*,rc.revision_cate_name,c.cate_name, m.m_nickname from revision
+		r,revision_cate rc,form f,cate c,member m where
+		r.revision_cate_seq =
+		rc.revision_cate_seq
+		and f.cate_seq = c.cate_seq and
+		r.m_seq = m.m_seq
+		and status =2
+	</select>
+
+	<select id="getRev" resultType="revision" parameterType="int">
+
+		select
+		r.*,rc.revision_cate_name,f.cate_seq,f.intro,m.m_seq,m.m_nickname from
+		revision r,revision_cate rc,form f,member m where
+		r.revision_cate_seq =
+		rc.revision_cate_seq and
+		r.f_seq= f.f_seq(+) and
+		r.m_seq = m.m_seq and
+		revision_seq=#{revision_seq}
+
+	</select>
+
+	<!-- 승인으로 -->
+	<update id="appUpStatus" parameterType="revision">
+		update revision
+		set status
+		= 1,memo=null,checkdate=sysdate where revision_seq =
+		#{revision_seq}
+	</update>
+	
+	<update id="NonAppUpStatus" parameterType="revision">
+		<!-- 부적격으로 -->
+		update revision set status=2, memo=#{memo},checkdate=sysdate where
+		revision_seq=#{revision_seq}
+	</update>
+	
+	
+	
+	
+	<!-- [[[[희지]]]]  -->
+	<select id="someInfo" parameterType="int" resultType="map">
+      select f.f_seq, f.name, f.cate_seq, r.status, r.revision_img 
+      from form f, revision r
+      where f.f_seq = r.f_seq
+      and r.revision_seq = #{revision_seq}
+   </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+

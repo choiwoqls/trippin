@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="c_inquiry">
+
+	<!-- [[[[새미]]]] -->
+	<insert id="insertc_Inquiry" parameterType="c_inquiry">
+		insert into c_inquiry values(c_inquiry_seq.nextval,#{inquiry_seq},#{kind},#{purchase_no})
+	</insert>
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
