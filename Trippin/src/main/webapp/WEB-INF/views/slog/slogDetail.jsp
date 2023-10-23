@@ -350,7 +350,6 @@
 	.mP{
 		text-align :center;
 		line-height : 5vh;
-		border: 1px solid;
 		border-radius: 30px;
 		width: 2.5vw;
 		height: 5vh;
@@ -460,6 +459,8 @@
 	    padding-bottom: 1%;
 	    width: 27vw;
 	    height: auto;
+	    font-weight: bold;
+		font-size: 12pt;
 	}
 	
 	.mcA{
@@ -511,6 +512,11 @@
 		width : 3vw;
 		cursor: pointer;
 		color: #368FFF;
+	}
+	
+	.profile{
+		position: relative;
+		width: 2.3vw;
 	}
 	
 	scroll-behavior:smooth;
@@ -778,7 +784,7 @@
 			${slog.CATE }
 		</div>
 		<div class="member">
-			<div class="mP">사진</div>
+			<div class="mP"><img class="profile" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Noto_Emoji_KitKat_263a.svg/800px-Noto_Emoji_KitKat_263a.svg.png"></div>
 			<div class="mI">
 				<div class="mN">${slog.M_NICKNAME }</div>
 				<div class="mL">LEVEL ${slog.M_LEVEL } / ${slog.REVIEWSU }개의 리뷰</div>
@@ -803,7 +809,7 @@
 				<c:forEach var="cmt" items="${slog.CMT_LIST }">
 					<div class="mCmt"> 
 						<div class="mcF">
-							<div class="mP">사진</div>
+							<div class="mP"><img class="profile" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Noto_Emoji_KitKat_263a.svg/800px-Noto_Emoji_KitKat_263a.svg.png"></div>
 							<div class="mcM">
 								<div class="mcN">${cmt.M_NICKNAME }</div>
 								<div class="mcC">${cmt.CONTENT }</div>

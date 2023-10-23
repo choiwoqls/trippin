@@ -154,7 +154,7 @@
 			</div>
 		</div>
 		<div class="bot">
-			<div class="bot1">${maxKind }에서 가장 많이 썼어요.</div>
+			<div class="bot1">${maxKinds }에서 가장 많이 썼어요.</div>
 			<!-- for -->
 			<c:forEach var="map" items="${costList }">
 				<div class="bitem" onclick="goDetail(${map.KIND})">

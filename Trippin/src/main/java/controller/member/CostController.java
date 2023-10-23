@@ -13,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,9 @@ import vo.sche.MoneyListVO;
 
 @Controller
 public class CostController {
+	
+	@Value("${globals.dir}")
+	private String FILEPATH;
 	
 	@Autowired
 	private CostService costService;
@@ -838,9 +842,17 @@ public class CostController {
 		
 		Map<String, Object> sInfo = scheService.scheInfo(s_seq);
 		
-		int maxK = costService.maxKind(s_seq);
+		List<Integer> maxK = costService.maxKind(s_seq);
 		String sumMon = costService.sumMon(s_seq);
-		String maxKind = this.kind(maxK);
+		String maxKinds = "";
+		int cnt = 0;
+		for(int k : maxK) {
+			cnt ++;
+			maxKinds += this.kind(k);
+			if(maxK.size() > 1 && cnt < maxK.size() ) {
+				maxKinds += ", ";
+			}
+		}
 		List<Map<String, Object>> costList = new ArrayList<Map<String,Object>>();
 		
 		for(Map<String, Object>map : costService.kindPer(s_seq)) {
@@ -853,7 +865,7 @@ public class CostController {
 		
 		model.addAttribute("sInfo", sInfo);
 		model.addAttribute("sumMon", sumMon);
-		model.addAttribute("maxKind", maxKind);
+		model.addAttribute("maxKinds", maxKinds);
 		model.addAttribute("costList", costList);
 		
 		return ViewPath.SCHEDULE +"cost/totCost.jsp";
@@ -1059,35 +1071,37 @@ public class CostController {
 			//함께하는 비용
 			boolean check = false;
 			for(Map<String, Object>member : mlist) {
-				check = true;
-				int m_seq = Integer.parseInt(String.valueOf(member.get("MNO")));
-				System.out.println(m_seq + "번 삭제");
-				MoneyListVO mvo = new MoneyListVO();
-				mvo.setM_seq(m_seq);
-				mvo.setS_seq(cvo.getS_seq());
-				int moneylist_seq = costService.checkMNL(mvo);
-				mvo.setMoneylist_seq(moneylist_seq);
-				int pm = 0;
-				int dm = 0;
-				for(Integer i : fplist) {
-					if(m_seq == i) {
-						pm = -fpm;
+				if(String.valueOf(member.get("COST_DETAILS_SEQ"))!= "null") {
+					check = true;
+					int m_seq = Integer.parseInt(String.valueOf(member.get("MNO")));
+					System.out.println(m_seq + "번 삭제");
+					MoneyListVO mvo = new MoneyListVO();
+					mvo.setM_seq(m_seq);
+					mvo.setS_seq(cvo.getS_seq());
+					int moneylist_seq = costService.checkMNL(mvo);
+					mvo.setMoneylist_seq(moneylist_seq);
+					int pm = 0;
+					int dm = 0;
+					for(Integer i : fplist) {
+						if(m_seq == i) {
+							pm = -fpm;
+						}
 					}
-				}
-				for(Integer i : fdlist) {
-					if(m_seq == i) {
-						dm = -fdm;
+					for(Integer i : fdlist) {
+						if(m_seq == i) {
+							dm = -fdm;
+						}
 					}
-				}
-				mvo.setM_tot_pay(pm);
-				mvo.setM_tot_dutch(dm);
-				if(!(pm==0 &&dm==0)) {// 
-					if(!costService.updateMNL(mvo)) {
-						check = false;
-						break;
+					mvo.setM_tot_pay(pm);
+					mvo.setM_tot_dutch(dm);
+					if(!(pm==0 &&dm==0)) {// 
+						if(!costService.updateMNL(mvo)) {
+							check = false;
+							break;
+						}
 					}
+					this.MNLZeroCheck(mvo);
 				}
-				this.MNLZeroCheck(mvo);
 			}
 			if(check) {
 				costService.delCost(cvo.getCost_seq());
@@ -1100,7 +1114,8 @@ public class CostController {
 	
 	public void MNLZeroCheck(MoneyListVO mvo) {
 		MoneyListVO zc = costService.zeroCheck(mvo.getMoneylist_seq());
-		if(zc.getM_tot_pay() == 0 && zc.getM_tot_dutch() == 0) {
+		
+		if(zc.getM_tot_pay() == 0 && zc.getM_tot_dutch() == 0 && zc != null) {
 			costService.delMNL(mvo.getMoneylist_seq());
 		}
 	}

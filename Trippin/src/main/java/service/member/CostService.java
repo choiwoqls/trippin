@@ -177,8 +177,8 @@ public class CostService {
 		return list;
 	}
 	
-	public int maxKind(int s_seq) {
-		int kind = -1;
+	public List<Integer> maxKind(int s_seq) {
+		List<Integer> kind = null;
 		if(costDao.maxKind(s_seq)!=null) {
 			kind = costDao.maxKind(s_seq);
 		}

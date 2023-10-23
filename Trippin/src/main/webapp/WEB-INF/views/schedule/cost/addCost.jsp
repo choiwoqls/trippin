@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -315,7 +316,7 @@
 		<div>비용 추가</div>
 	</div>
 	<div class="cost">
-		<div class="cin"><input id="tmon" style="border: 0; width: 78vw; height: 9.5vh;   background-color: silver; font-size: 25px;" type="number" name="tot_money"  step="1000" placeholder="금액 입력 " ></div>
+		<div class="cin"><input id="tmon" style="text-align: center; border: 0; width: 78vw; height: 9.5vh; outline: none; background-color: silver; font-size: 50px;" type="number" name="tot_money"  step="1000" placeholder="금액 입력 " ></div>
 	</div>
 </div>
 <div class="mid">
@@ -349,7 +350,7 @@
 	</div>
 	<div class="mid2">
 		<div>내용</div>
-		<div><input autocomplete="off" id="cont" style="border: 0; width: 40vw; height: 6vh" type="text" name="content" placeholder="내용을 입력 해주세요" required="required"></div>
+		<div><input autocomplete="off" id="cont" style="border: 0; width: 40vw; height: 6vh; font-size: 30px; outline: none;" type="text" name="content" placeholder="내용을 입력 해주세요" required="required"></div>
 	</div>
 	<div class="mid3">
 		<div class="mid3f">

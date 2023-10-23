@@ -81,8 +81,8 @@ public class CostDAO {
 		return sqlSession.selectList("kindPer", s_seq);
 	}
 	
-	public Integer maxKind(int s_seq) {
-		return sqlSession.selectOne("maxKind", s_seq);
+	public List<Integer> maxKind(int s_seq) {
+		return sqlSession.selectList("maxKind", s_seq);
 	}
 	
 	public String sumMon(int s_seq) {
