@@ -3,9 +3,11 @@
 **진행기간**
 2023.08 ~ 2023.09
 
+
 **참여인원**
 front-end 1명
 back-end 5명
+
 
 **담당기능**
 - 여행 일정 관리(여행 생성, 수정, 삭제)
@@ -17,5 +19,5 @@ back-end 5명
 **사용 기술**
  - Spring framework legacy project
  - Java 11
- - OracleSQL
+ - OracleSQL, myBatis
  - JSP, HTML, CSS, Ajax, JavaScript, jQuery
