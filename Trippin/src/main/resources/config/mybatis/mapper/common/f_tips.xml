@@ -4,7 +4,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="f_tips">
 	
-	<!-- 희지 -->
 	<insert id="insert" parameterType="f_tips">
 		insert into f_tips values(f_tips_seq.nextval, #{f_seq}, #{tips_seq}, #{f_tip, jdbcType=VARCHAR})
 	</insert>
