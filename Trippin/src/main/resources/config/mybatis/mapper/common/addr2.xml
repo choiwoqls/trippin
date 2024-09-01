@@ -8,12 +8,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select * from addr2 where addr1_seq = #{addr1_seq} order by addr2_seq
 	</select>
 	
-	<!-- 재빈 -->
 	<select id="addr2Name" parameterType="int" resultType="String">
 		select addr2_name from addr2 where addr2_seq = #{addr2_seq}
 	</select>
 	
-	<!-- 현지 -->
 	<select id="addrInfo" parameterType="int" resultType="int">
 		select addr1_seq from addr2 where addr2_seq = #{addr2_seq}
 	</select>
