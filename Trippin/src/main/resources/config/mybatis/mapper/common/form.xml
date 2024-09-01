@@ -14,7 +14,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	
-	<!-- 재빈 -->
 	<select id="selectScheList" resultType="Map" parameterType="int">
 		select f.f_seq, f.name, f.cate_seq,
 		        CASE
@@ -103,7 +102,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	
-	<!-- 현지 -->
 	<select id="selectTour" resultType="Map" parameterType="int">
 		select f.*, tc.t_cate_name, c.cate_name, a.addr2_name, nvl(x.JJIM, 0) jj, nvl(y.savg, 0) savg, nvl(y.RV, 0) rv,t.*
 		from FORM f, ADDR2 a, TOUR_CATE tc, TOUR t, CATE c,
@@ -134,8 +132,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		and f.f_seq = #{f_seq}
 	</select>
 	
-	
-	<!-- [[[[희지]]]] -->
 	<!-- cate별 리스트 뽑기 -->
 	<select id="selectList" resultType="Map" parameterType="map">
 		select * from
@@ -309,7 +305,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	
-	<!-- 새미 -->
 	<select id="formList" resultType="form">
 		select c.cate_name,f.* from form f, cate c where f.cate_seq=c.cate_seq
 	</select>
