@@ -18,8 +18,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		order by d.day_seq, h.hours_seq
 	</select>
 	
+
 	
-	<!-- 히지 -->
 	<!-- 시간 넣기 -->
 	<!-- <insert id="insert" parameterType="hours">
 		insert into hours values(#{hours_seq}, #{f_seq}, #{day_seq}, #{hours_cate_seq}, #{time, jdbcType=VARCHAR})
