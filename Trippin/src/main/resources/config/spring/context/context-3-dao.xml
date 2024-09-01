@@ -30,7 +30,6 @@
 	</bean>
 
 
-	<!-- [[[[재빈]]]] -->
 	<bean id="scheDao" class="dao.sche.ScheDAO">
 		<constructor-arg ref="sqlSession" />
 	</bean>
@@ -97,7 +96,6 @@
 	</bean>
 
 
-	<!-- [[[[현지]]]] -->
 	<bean id="slog_cmt_likeDao" class="dao.slog.Slog_Cmt_LikeDAO">
 		<constructor-arg ref="sqlSession" />
 	</bean>
@@ -157,7 +155,6 @@
 
 
 
-	<!-- [[[[새미]]]] -->
 	<!--member -->
 	<bean id="cs_cateDao" class="dao.member.CS_CateDAO">
 		<constructor-arg ref="sqlSession" />
@@ -202,8 +199,6 @@
 		<constructor-arg ref="sqlSession" />
 	</bean>
 
-
-	<!-- [[[[희지, 새미]]]] -->
 	<bean id="report_cateDao" class="dao.member.Report_CateDAO">
 		<constructor-arg ref="sqlSession" />
 	</bean>
@@ -233,7 +228,6 @@
 	</bean>
 
 
-	<!-- [[[[현지, 희지]]]] -->
 	<bean id="hoursDao" class="dao.common.HoursDAO">
 		<constructor-arg ref="sqlSession" />
 	</bean>
@@ -259,7 +253,6 @@
 	</bean>
 
 
-	<!-- [[[[희지]]]] -->
 	<bean id="ccp_wordDao" class="dao.ticket.Ccp_WordDAO">
 		<constructor-arg ref="sqlSession" />
 	</bean>
@@ -345,7 +338,6 @@
 	</bean>
 
 
-	<!-- [[[[기범]]]] -->
 	<bean id="a_cateDao" class="dao.accom.A_CateDAO">
 		<constructor-arg ref="sqlSession" />
 	</bean>
