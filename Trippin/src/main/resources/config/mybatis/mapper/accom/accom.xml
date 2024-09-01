@@ -4,7 +4,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="accom">
 	
-	<!-- [[[[기범]]]] -->
 	<!-- 숙소 공통! 객실만 -->
 	<select id = "selectRoom" resultType="Map" parameterType="int">
 
