@@ -4,7 +4,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="rc">
 	
-	<!-- [[[[현지]]]] -->
 	<insert id="insert" parameterType="rc">
 		insert into REVIEW_CMT values(#{rv_cmt_seq}, #{rv_seq}, #{m_seq}, #{content}, SYSDATE, #{cmt_no},
 			<if test="m_seq2 != 0">
@@ -58,11 +57,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	 -->
 	 
-	 
-	 
-	 
-	 
-	 <!-- [[[[새미]]]] -->
 	<!--신고 15점 도달 숨김 처리  -->
 	<update id="HiddenRVC" parameterType="review">
 		update REVIEW_CMT set report_status = 1 where rv_cmt_seq = #{rv_cmt_seq} 
