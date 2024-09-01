@@ -4,7 +4,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="review">
 	
-	<!-- [[[[현지]]]] -->
 	<insert id="insert" parameterType="review">
 		insert into REVIEW values(#{rv_seq}, #{m_seq}, #{f_seq}, #{visitday, jdbcType=VARCHAR}, #{stars}, #{content}, SYSDATE, #{rv_img, jdbcType=VARCHAR}, 0, 0)
 	</insert>
@@ -126,7 +125,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	
 	
-	<!-- [[[[새미]]]] -->
 	<!--리뷰 15점 도달 숨김 처리 -->
 	<update id="HiddenRV" parameterType="review">
 		update REVIEW set
@@ -168,7 +166,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where rv_seq=#{rv_seq}
 	</update>
 	
-	<!-- [[[[희지]]]] -->
 	<select id="whoRv" parameterType="int" resultType="int">
 		select m_seq from review where rv_seq= #{rv_seq}
 	</select>
