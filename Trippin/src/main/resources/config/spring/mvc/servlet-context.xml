@@ -34,13 +34,11 @@
 		<beans:constructor-arg ref="purchaseService" />
 	</beans:bean>
 	
-	<!-- [[[[기범]]]] -->
 	<beans:bean class="controller.admin.AccomController">
 		<beans:constructor-arg ref="accomService"/>
 	</beans:bean>
 
 
-	<!-- [[[[희지]]]] -->	
 	<beans:bean class="controller.admin.HotpleController">
 		<beans:constructor-arg ref="hotpleService" />
 		<beans:constructor-arg ref="adminService" />
@@ -52,8 +50,7 @@
 		<beans:constructor-arg ref="memberService" />
 	</beans:bean>
 	
-	
-	<!-- [[[[현지, 희지]]]] -->	
+		
 	<beans:bean class="controller.login.LoginController">
 		<beans:constructor-arg ref="loginService" />
 		<beans:constructor-arg ref="adminService" />
@@ -62,7 +59,6 @@
 	</beans:bean>
 	
 	
-	<!-- [[[[현지]]]] -->	
 	<beans:bean class="controller.admin.TourController">
 		<beans:constructor-arg ref="tourService" />
 		<beans:constructor-arg ref="memberService" />
@@ -78,7 +74,6 @@
 		<beans:constructor-arg ref="mailSendService" />
 	</beans:bean>
 	
-	<!-- [[[재빈]]] -->
 	<beans:bean class="controller.member.ScheController">
 		<beans:constructor-arg ref="scheService"/>
 		<beans:constructor-arg ref="addrService"/>
@@ -101,7 +96,6 @@
 		<beans:constructor-arg ref="loginService"/>
 	</beans:bean>
 	
-	<!-- [[[[새미]]]] -->
 	<beans:bean class="controller.member.CsController">
 		<beans:constructor-arg ref="csService" />
 		<beans:constructor-arg ref="memberService" />
