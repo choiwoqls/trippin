@@ -85,7 +85,7 @@
 		<constructor-arg ref="paymentDao" />
 	</bean>
 	
-	<!-- [[[[희지]]]] -->
+
 	<bean class="service.admin.HotpleService" id="hotpleService">
 		<constructor-arg ref="h_cateDao" />	
 		<constructor-arg ref="addr1Dao" />	
@@ -114,8 +114,7 @@
 		<constructor-arg ref="refundDao" />
 	</bean>
 	
-	
-	<!-- [[[[새미]]]] -->
+
 	<bean class="service.member.MyclistService" id="myclistService">
 		<constructor-arg ref="clist_cateDao" />
 		<constructor-arg ref="clist_memoDao" />
@@ -136,7 +135,6 @@
 	
 	
 	
-	<!-- [[[[현지]]]] -->
 	<bean class="service.admin.MailSendService" id="mailSendService">
 		<constructor-arg ref="mailSender" />	
 	</bean>
@@ -169,7 +167,7 @@
 	
 	
 	
-	<!-- [[[[기범]]]] -->
+
 	<!-- 숙소 -->
 	<bean class="service.admin.AccomService" id="accomService">
 		<constructor-arg ref="roomDao"/>
@@ -182,7 +180,7 @@
 	</bean>
 	
 	
-	<!-- [[[[재빈]]]] -->
+	
 	<bean class="service.member.ScheService" id="scheService">
 		<constructor-arg ref="scheDao"/>
 		<constructor-arg ref="styleDao"/>
