@@ -151,7 +151,6 @@
 		<mapper resource="config/mybatis/mapper/common/cate.xml"/>
 		
 		
-		<!-- [[[[재빈]]]] -->
 		<mapper resource="config/mybatis/mapper/schedule/schedule.xml"/>
 		<mapper resource="config/mybatis/mapper/schedule/style.xml"/>
 		<mapper resource="config/mybatis/mapper/schedule/city.xml"/>
@@ -172,7 +171,6 @@
 		<mapper resource="config/mybatis/mapper/slog/myplace.xml"/>
 		<mapper resource="config/mybatis/mapper/slog/day_slog.xml"/>
 		
-		<!-- [[[[현지]]]] -->
 		<mapper resource="config/mybatis/mapper/tour/tour.xml"/>
 		<mapper resource="config/mybatis/mapper/tour/tour_cate.xml"/>
 		
@@ -185,8 +183,7 @@
 		<mapper resource="config/mybatis/mapper/ticket/tkjjim.xml"/>
 		
 		
-		
-		<!-- [[[[새미]]]] -->
+
 		<mapper resource="config/mybatis/mapper/schedule/clist_cate.xml"/>
 		<mapper resource="config/mybatis/mapper/schedule/clist_items.xml"/>
 		<mapper resource="config/mybatis/mapper/schedule/clist_memo.xml"/>
@@ -204,7 +201,6 @@
 		<mapper resource="config/mybatis/mapper/member/s_report.xml"/>
 
 		
-		<!-- [[[[희지]]]] -->
 		<mapper resource="config/mybatis/mapper/hotple/h_cate.xml"/>
 		<mapper resource="config/mybatis/mapper/hotple/hotple.xml"/>
 		<mapper resource="config/mybatis/mapper/hotple/menu.xml"/>
@@ -236,13 +232,11 @@
 		<mapper resource="config/mybatis/mapper/ticket/subopt.xml"/>
 		<mapper resource="config/mybatis/mapper/ticket/ccp_word.xml"/>
 		
-		<!-- [[[[현지, 희지]]]] -->
 		<mapper resource="config/mybatis/mapper/ticket/ticket.xml"/>
 		<mapper resource="config/mybatis/mapper/common/review_cmt_like.xml"/>
 		<mapper resource="config/mybatis/mapper/common/review_like.xml"/>
 		
 		
-		<!-- [[[[희지, 새미]]]] -->
 		<mapper resource="config/mybatis/mapper/member/report_cate.xml"/>
 		<mapper resource="config/mybatis/mapper/member/report.xml"/>
 		<mapper resource="config/mybatis/mapper/member/m_report_cate.xml"/>
@@ -250,12 +244,9 @@
 		<mapper resource="config/mybatis/mapper/ticket/t_reserver.xml"/>
 		<mapper resource="config/mybatis/mapper/ticket/t_purchase.xml"/>
 
-
-		<!-- [[[[현지, 새미]]]] -->
 		<mapper resource="config/mybatis/mapper/common/review_cmt.xml"/>
 		<mapper resource="config/mybatis/mapper/common/review.xml"/>
 
-		<!-- [[[[기범]]]] -->
 		<mapper resource="config/mybatis/mapper/accom/a_cate.xml"/>
 		<mapper resource="config/mybatis/mapper/accom/accom.xml"/>
 		
