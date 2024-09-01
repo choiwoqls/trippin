@@ -4,7 +4,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="payment">
 	
-	<!-- 새미 -->
 	<select id="accomPayList" resultType="payment" parameterType="int" >
 		select p.*,f.name from payment p,room r, form f  where 
 		p.room_seq = r.room_seq and
